@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, TextField, withStyles, Button, FormControl, InputLabel, Select, MenuItem,Paper } from '@material-ui/core'
+import { Grid, TextField, withStyles, Button, FormControl, InputLabel, Select, MenuItem, Paper } from '@material-ui/core'
 import '../App.css';
 import axios from 'axios'
 import { useToasts } from 'react-toast-notifications'
@@ -8,10 +8,14 @@ import Category from './Category';
 const styles = theme => ({
     root: {
         "& .MuiGrid-grid-xs-10": {
-            marginTop: "25px",
+            marginTop: "18px",
+            marginLeft: "20px"
         },
         '& .MuiTextField-root': {
             margin: theme.spacing(1),
+        },
+        "& .MuiSelect-outlined.MuiSelect-outlined": {
+            textAlign: "left"
         }
     },
     formControl: {
@@ -40,7 +44,6 @@ const ProductForm = ({ classes, ...props }) => {
     const [values, setValues] = useState(initialFieldValues)
     const [errors, setErrors] = useState({})
     const [category, setCategory] = useState([])
-    // const [product, setProduct] = useState(initialFieldValues)
 
     //material-ui select
     const inputLabel = React.useRef(null);
@@ -106,10 +109,8 @@ const ProductForm = ({ classes, ...props }) => {
         props.setCurrentId = 0
     }
 
-
     //Submit Event
     const handleSubmit = e => {
-        debugger;
         const formatData = data => ({
             ...data,
             categoryId: parseInt(data.categoryId ? data.categoryId : 0),
@@ -130,7 +131,6 @@ const ProductForm = ({ classes, ...props }) => {
         }
         e.preventDefault()
         if (validate()) {
-            debugger;
             if (props.currentId == 0)
                 axios.post(baseUrl + 'Products/', formatData(body))
                     .then(data => {
@@ -246,7 +246,7 @@ const ProductForm = ({ classes, ...props }) => {
                 </form>
             </div>
         </div>
-        
+
     );
 }
 

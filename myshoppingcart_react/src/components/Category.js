@@ -5,7 +5,6 @@ import { Grid, Paper, withStyles, Container } from '@material-ui/core'
 import axios from 'axios'
 import { ToastProvider } from 'react-toast-notifications'
 
-
 const styles = theme => ({
     paper: {
         margin: theme.spacing(2),
@@ -28,20 +27,20 @@ const Category = ({ classes, props }) => {
 
     return (
         <div>
-        <Container maxWidth="md">
-            <Paper className={classes.paper} elevation={3}>
-                 <Grid container >
-                    <Grid item xs={6}>
-                        <ToastProvider autoDismiss={true}>
-                            <CategoryForm category={category} setCategory={setCategory} getCategory={getCategories} currentId={currentId}  />
-                        </ToastProvider>
+            <Container maxWidth="md">
+                <Paper className={classes.paper} elevation={3}>
+                    <Grid container >
+                        <Grid item xs={6}>
+                            <ToastProvider autoDismiss={true}>
+                                <CategoryForm category={category} setCategory={setCategory} getCategory={getCategories} currentId={currentId} />
+                            </ToastProvider>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <CategoryList categoryList={category} setCategory={setCategory} getCategoryList={getCategories} setCurrentId={setCurrentId} currentId={currentId} />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <CategoryList categoryList={category} setCategory={setCategory} getCategoryList={getCategories} setCurrentId = {setCurrentId} currentId={currentId} />
-                    </Grid>
-                </Grid>
-                
-            </Paper>
+
+                </Paper>
             </Container>
         </div>
     )

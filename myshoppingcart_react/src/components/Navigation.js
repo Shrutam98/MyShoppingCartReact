@@ -29,10 +29,17 @@ const useStyles = makeStyles((theme) => ({
         "& .makeStyles-content-9": {
             padding: "10px"
         },
-        "&.MuiListItemIcon-root" : {
-            minWidth : "45px"
+        "&.MuiListItemIcon-root": {
+            minWidth: "45px"
+        },
+        "& .MuiListItemIcon-root": {
+            marginLeft: "38px",
+            minWidth: "45px"
+        },
+        "& .MuiListItemText-root": {
+            textDecoration: "none"
         }
-        
+
     },
     appBar: {
         transition: theme.transitions.create(['margin', 'width'], {
@@ -88,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
     navlink: {
         textDecoration: "none"
     },
-    decoration : {
+    decoration: {
         textDecoration: "none"
     }
 }));
@@ -146,55 +153,59 @@ export default function PersistentDrawerLeft() {
                 </div>
                 <Divider />
                 <List>
-            <NavLink 
-              to="/Dashboard" 
-              exact
-              activeStyle={{
-                color: "red",   
-                textDecoration : "none"             
-                }}
-              className={classes.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <DashboardRoundedIcon color='primary' />
-                </ListItemIcon>
-                <ListItemText primary={"Dashboard"} />
-              </ListItem>
-            </NavLink>
-    
-            <NavLink 
-              to="/Category" 
-              activeStyle={{
-                color: "red",
-                textDecoration : "none" 
-                }}
-              className={classes.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <CategoryRoundedIcon color='primary'/>
-                </ListItemIcon>
-                <ListItemText primary={"Categories"} />
-              </ListItem>
-            </NavLink> 
+                    <NavLink
+                        to="/Dashboard"
+                        exact
+                        style={{ textDecoration: "none" }}
+                        className={classes.link}
+                        activeStyle={{
+                            color: "red",
+                            textDecoration: "none"
+                        }}
+                    >
+                        <ListItem button>
+                            <ListItemIcon>
+                                <DashboardRoundedIcon color='primary' />
+                            </ListItemIcon>
+                            <ListItemText primary={"Dashboard"} />
+                        </ListItem>
+                    </NavLink>
 
-            <NavLink 
-              to="/Product" 
-              activeStyle={{
-                color: "red",
-                textDecoration : "none" 
-                }}
-              className={classes.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <DashboardRoundedIcon color='primary'/>
-                </ListItemIcon>
-                <ListItemText className = {classes.decoration} primary={"Products"} />
-              </ListItem>
-            </NavLink>
-                       
-          </List>
+                    <NavLink
+                        to="/Category"
+                        style={{ textDecoration: "none" }}
+                        activeStyle={{
+                            color: "red",
+                            textDecoration: "none"
+                        }}
+                        className={classes.link}>
+                        <ListItem button>
+                            <ListItemIcon>
+                                <CategoryRoundedIcon color='primary' />
+                            </ListItemIcon>
+                            <ListItemText primary={"Categories"} />
+                        </ListItem>
+                    </NavLink>
 
-            <Divider />
+                    <NavLink
+                        to="/Product"
+                        style={{ textDecoration: "none" }}
+                        activeStyle={{
+                            color: "red",
+                            textDecoration: "none"
+                        }}
+                        className={classes.link}>
+                        <ListItem button>
+                            <ListItemIcon>
+                                <DashboardRoundedIcon color='primary' />
+                            </ListItemIcon>
+                            <ListItemText className={classes.decoration} primary={"Products"} />
+                        </ListItem>
+                    </NavLink>
+
+                </List>
+
+                <Divider />
             </Drawer>
             <main
                 className={clsx(classes.content, {
