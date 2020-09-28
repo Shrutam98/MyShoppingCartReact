@@ -1,8 +1,13 @@
 .App {
   text-align: center;
 }
-
+.buttonDivCategory{
+  margin-top: 10px;
+}
 .categoryTitle{
   color : #3f51b5;
   margin : 5px
+}
+.tableMargin{
+  margin-top: 35px;
 }

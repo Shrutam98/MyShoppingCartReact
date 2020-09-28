@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import '../App.css';
+import '../App.css'
 import axios from 'axios'
 import { Container, Grid, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, withStyles, ButtonGroup, Button } from '@material-ui/core';
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import Category from '../components/Category';
+
 
 
 const styles = theme => ({
@@ -27,22 +27,30 @@ const styles = theme => ({
 const baseUrl = "https://localhost:44317/api/"
 
 const CategoryList = ({ classes, ...props }) => {
-    const [currentId, setCurrentId] = useState(0)
-    useEffect(() => {
-       props.getCategoryList(props.CategoryList)
-    }, [props.CategoryListcategoryList])
-   // useEffect( () => { fetchUsers(users) }, [ users ] );
-    const onDelete = (categoryId) => {
 
+    useEffect(() => {
+       props.getCategoryList()
+    }, [])
+
+    const DeleteRecord =  id => {
+        if(window.confirm("Are you sure to delete this record?"))
+
+        axios.delete(baseUrl + `Categories/${id}`)
+        .then(data => {   
+            props.getCategoryList()   
+        })
+        .catch(error => console.log(error))
+       
     }
 
     return (
         <Container maxWidth="sm">
-            <Paper className={classes.paper} elevation={3}  >
+            {/* <Paper className={classes.paper} elevation={3}  > */}
                 <Grid container>
                     <Grid item xs={12}>
                         <h1 className="categoryTitle">List of Category</h1>
                         <hr></hr>
+                        <div className = "tableMargin">
                         <TableContainer>
                             <Table>
                                 <TableHead className={classes.root}>
@@ -55,15 +63,17 @@ const CategoryList = ({ classes, ...props }) => {
                                 <TableBody>
                                     {
                                        props.categoryList.map((record, index) => {
+                                   
                                             return (
+                                                
                                                 <TableRow key={index} hover>
                                                     <TableCell>{index + 1}</TableCell>
                                                     {/* <TableCell>{record.categoryId}</TableCell> */}
                                                     <TableCell>{record.categoryName}</TableCell>
                                                     <TableCell>
                                                         <ButtonGroup variant="text">
-                                                            <Button onClick={() => setCurrentId(record.categoryId)}><EditIcon color="primary" /></Button>
-                                                            <Button onClick={() => onDelete(record.categoryId)}><DeleteIcon color="secondary" /></Button>
+                                                            <Button onClick={() => props.setCurrentId(record.categoryId)}><EditIcon color="primary" /></Button>
+                                                            <Button onClick={() => DeleteRecord(record.categoryId)}><DeleteIcon color="secondary" /></Button>
                                                         </ButtonGroup>
                                                     </TableCell>
 
@@ -74,9 +84,10 @@ const CategoryList = ({ classes, ...props }) => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
+                        </div>
                     </Grid>
                 </Grid>
-            </Paper>
+            {/* </Paper> */}
         </Container>
     );
 }

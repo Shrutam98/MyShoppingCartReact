@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
         "& .makeStyles-content-9": {
             padding: "10px"
         },
+        "&.MuiListItemIcon-root" : {
+            minWidth : "45px"
+        }
+        
     },
     appBar: {
         transition: theme.transitions.create(['margin', 'width'], {
@@ -82,6 +86,9 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 0,
     },
     navlink: {
+        textDecoration: "none"
+    },
+    decoration : {
         textDecoration: "none"
     }
 }));
@@ -138,31 +145,56 @@ export default function PersistentDrawerLeft() {
                     </IconButton>
                 </div>
                 <Divider />
-                <List aria-label="main mailbox folders">
-                    {/* {['Dashboard','Category', 'Product'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index === 0 ? <DashboardRoundedIcon /> : <CategoryRoundedIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))} */}
-                    <div>
+                <List>
+            <NavLink 
+              to="/Dashboard" 
+              exact
+              activeStyle={{
+                color: "red",   
+                textDecoration : "none"             
+                }}
+              className={classes.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <DashboardRoundedIcon color='primary' />
+                </ListItemIcon>
+                <ListItemText primary={"Dashboard"} />
+              </ListItem>
+            </NavLink>
+    
+            <NavLink 
+              to="/Category" 
+              activeStyle={{
+                color: "red",
+                textDecoration : "none" 
+                }}
+              className={classes.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <CategoryRoundedIcon color='primary'/>
+                </ListItemIcon>
+                <ListItemText primary={"Categories"} />
+              </ListItem>
+            </NavLink> 
 
-                        <div >
-                            <NavLink className={classes.navlink} exact to='/Dashboard' ><DashboardRoundedIcon /> Dashboard</NavLink>
-                        </div>
-                        <div>
-                            <NavLink className={classes.navlink} exact to='/Category' ><CategoryRoundedIcon />Category</NavLink>
-                        </div>
-                        <div>
-                            <NavLink className={classes.navlink} exact to='/Product' ><CategoryRoundedIcon />Product</NavLink>
-                        </div>
+            <NavLink 
+              to="/Product" 
+              activeStyle={{
+                color: "red",
+                textDecoration : "none" 
+                }}
+              className={classes.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <DashboardRoundedIcon color='primary'/>
+                </ListItemIcon>
+                <ListItemText className = {classes.decoration} primary={"Products"} />
+              </ListItem>
+            </NavLink>
+                       
+          </List>
 
-                      
-
-                    </div>
-
-                </List>
-                <Divider />
+            <Divider />
             </Drawer>
             <main
                 className={clsx(classes.content, {
