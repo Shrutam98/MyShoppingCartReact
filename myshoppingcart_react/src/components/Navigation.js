@@ -17,8 +17,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DashboardRoundedIcon from '@material-ui/icons/DashboardRounded';
 import CategoryRoundedIcon from '@material-ui/icons/CategoryRounded';
-import { BrowserRouter, Route, Switch, NavLink } from 'react-router-dom'
-import { Paper } from '@material-ui/core';
+import { NavLink } from 'react-router-dom'
 
 
 const drawerWidth = 240;
@@ -159,7 +158,7 @@ export default function PersistentDrawerLeft() {
                         style={{ textDecoration: "none" }}
                         className={classes.link}
                         activeStyle={{
-                            color: "red",
+                            color: "#f50057",
                             textDecoration: "none"
                         }}
                     >
@@ -175,7 +174,7 @@ export default function PersistentDrawerLeft() {
                         to="/Category"
                         style={{ textDecoration: "none" }}
                         activeStyle={{
-                            color: "red",
+                            color: "#f50057",
                             textDecoration: "none"
                         }}
                         className={classes.link}>
@@ -191,7 +190,7 @@ export default function PersistentDrawerLeft() {
                         to="/Product"
                         style={{ textDecoration: "none" }}
                         activeStyle={{
-                            color: "red",
+                            color: "#f50057",
                             textDecoration: "none"
                         }}
                         className={classes.link}>

@@ -44,7 +44,7 @@ const CategoryList = ({ classes, ...props }) => {
         getCategories()
     }, [])
 
-    const DeleteRecord = id => {
+    const onDelete = id => {
         if (window.confirm("Are you sure to delete this record?"))
 
             axios.delete(baseUrl + `Categories/${id}`)
@@ -89,7 +89,7 @@ const CategoryList = ({ classes, ...props }) => {
                                                         <TableCell>
                                                             <ButtonGroup variant="text">
                                                                 <Button onClick={() => setCurrentId(record.categoryId)}><EditIcon color="primary" /></Button>
-                                                                <Button onClick={() => DeleteRecord(record.categoryId)}><DeleteIcon color="secondary" /></Button>
+                                                                <Button onClick={() => onDelete(record.categoryId)}><DeleteIcon color="secondary" /></Button>
                                                             </ButtonGroup>
                                                         </TableCell>
 

@@ -42,15 +42,13 @@ const ProductList = ({ classes, props }) => {
         const result = await axios.get(baseUrl + 'Products/')
         setProduct(result.data)
     }
-    const DeleteRecord = id => {
+    const onDelete = id => {
         if (window.confirm("Are you sure to delete this record?"))
-
             axios.delete(baseUrl + `Products/${id}`)
                 .then(data => {
                     getProducts()
                 })
                 .catch(error => console.log(error))
-
     }
 
     return (
@@ -79,26 +77,27 @@ const ProductList = ({ classes, props }) => {
                                                 <TableCell>Quantity</TableCell>
                                                 <TableCell>Discount</TableCell>
                                                 <TableCell>GST</TableCell>
+                                                <TableCell>Image</TableCell>
                                                 <TableCell>Actions</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
                                             {
                                                 product.map((record, index) => {
-
                                                     return (
                                                         <TableRow key={index} hover>
                                                             <TableCell>{index + 1}</TableCell>
                                                             <TableCell>{record.productName}</TableCell>
-                                                            <TableCell>{record.categoryId}</TableCell>
+                                                            <TableCell>{record.category?.categoryName}</TableCell>
                                                             <TableCell>{record.price}</TableCell>
                                                             <TableCell>{record.quantity}</TableCell>
                                                             <TableCell>{record.discount}</TableCell>
                                                             <TableCell>{record.gst}</TableCell>
+                                                            <TableCell>{record.image}</TableCell>
                                                             <TableCell>
                                                                 <ButtonGroup variant="text">
                                                                     <Button onClick={() => setCurrentId(record.productId)}><EditIcon color="primary" /></Button>
-                                                                    <Button onClick={() => DeleteRecord(record.productId)}><DeleteIcon color="secondary" /></Button>
+                                                                    <Button onClick={() => onDelete(record.productId)}><DeleteIcon color="secondary" /></Button>
                                                                 </ButtonGroup>
                                                             </TableCell>
 

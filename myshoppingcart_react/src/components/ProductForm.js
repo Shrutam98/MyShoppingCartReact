@@ -35,7 +35,9 @@ const initialFieldValues = {
     quantity: '',
     discount: '',
     gst: '',
-    categoryName: ''
+    categoryName: '',
+    image: '',
+    imageFile: null
 }
 
 const ProductForm = ({ classes, ...props }) => {
@@ -44,6 +46,9 @@ const ProductForm = ({ classes, ...props }) => {
     const [values, setValues] = useState(initialFieldValues)
     const [errors, setErrors] = useState({})
     const [category, setCategory] = useState([])
+    const [file, setFile] = useState()
+    const [fileName, setFileName] = useState()
+
 
     //material-ui select
     const inputLabel = React.useRef(null);
@@ -59,10 +64,11 @@ const ProductForm = ({ classes, ...props }) => {
 
     useEffect(() => {
         getCategories()
-        if (props.currentId != 0)
-            setValues({
-                ...props.product.find(x => x.productId == props.currentId),
 
+        if (props.currentId !== 0)
+
+            setValues({
+                ...props.product.find(x => x.productId === props.currentId),
             })
         else
             setValues({
@@ -95,9 +101,25 @@ const ProductForm = ({ classes, ...props }) => {
         setValues({
             ...values,
             ...fieldValue
-
         })
         validate(fieldValue)
+    }
+
+    const saveImage = e => {
+        if (e.target.files && e.target.files[0]) {
+            let imageFile = e.target.files[0]
+            console.log(e)
+            setValues({
+                ...values,
+                imageFile: imageFile
+            })
+        }
+        else {
+            setValues({
+                ...values,
+                imageFile: null
+            })
+        }
     }
 
     //Reset From
@@ -105,50 +127,52 @@ const ProductForm = ({ classes, ...props }) => {
         setValues({
             ...initialFieldValues
         })
+        document.getElementById('image-uploader').value = null
         setErrors({})
         props.setCurrentId = 0
     }
-
+    const id = props.currentId
     //Submit Event
     const handleSubmit = e => {
-        const formatData = data => ({
-            ...data,
-            categoryId: parseInt(data.categoryId ? data.categoryId : 0),
-            price: parseFloat(data.price ? data.price : 0.0),
-            quantity: parseInt(data.quantity ? data.quantity : 0),
-            discount: parseFloat(data.discount ? data.discount : 0.0),
-            gst: parseFloat(data.gst ? data.gst : 0.0)
-        })
-        const id = props.currentId
-        const body = {
-            productId: props.currentId,
-            'productName': values.productName,
-            'categoryId': values.categoryId,
-            'price': values.price,
-            'quantity': values.quantity,
-            'discount': values.discount,
-            'gst': values.gst,
-        }
+
+        const data = new FormData()
+        data.append('productId', props.currentId)
+        data.append('productName', values.productName)
+        data.append('categoryId', values.categoryId)
+        data.append('price', values.price)
+        data.append('quantity', values.quantity)
+        data.append('discount', values.discount)
+        data.append('gst', values.gst)
+        data.append('image', values.image)
+        data.append('imageFile', values.imageFile)
         e.preventDefault()
         if (validate()) {
             if (props.currentId == 0)
-                axios.post(baseUrl + 'Products/', formatData(body))
+                axios.post(baseUrl + 'Products/', data)
                     .then(data => {
                         props.setProduct([...props.product, data.data]
                         )
+                        props.getProducts()
                         resetForm()
                     })
                     .catch(error => console.log(error))
             else
-                axios.put(baseUrl + `Products/${props.currentId}`, (id, formatData(body)))
+                axios.put(baseUrl + `Products/${props.currentId}`, (id, (data)))
                     .then(data => {
-                        props.setProduct([...props.product.find(x => x.productId == props.currentId), data.data])
+                        props.setCurrentId(0)
+                        props.getProducts()
+                        // props.setProduct([...props.product.find(x => x.productId == props.currentId), data.data])                     
                         resetForm()
+
                     })
                     .catch(error => console.log(error))
             resetForm()
         }
     }
+
+    useEffect(() => {
+        props.getProducts()
+    }, [id])
 
     return (
         <div>
@@ -226,6 +250,20 @@ const ProductForm = ({ classes, ...props }) => {
                                 fullWidth
                                 value={values.gst}
                                 onChange={handleInputChange}
+                            />
+                            <TextField
+                                name="image"
+                                variant="outlined"
+                                id="image-uploader"
+                                label="Image"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                type="file"
+                                accept="image/*"
+                                fullWidth
+                                ///value={values.image}
+                                onChange={saveImage}
                             />
                             <div className="buttonDivProduct">
                                 <Button
