@@ -26,30 +26,32 @@ const styles = theme => ({
 })
 
 const CategoryList = ({ classes }) => {
-
     const baseUrl = "https://localhost:44317/api/"
     const [category, setCategory] = useState([])
     const [currentId, setCurrentId] = useState(0)
-    useEffect(() => {
-        getCategoriesList()
-    }, [])
     const getCategoriesList = async () => {
         const categories = await CategoryService.getCategories()
         setCategory(categories.data)
     }
+    useEffect(() => {
+        getCategoriesList()
+    }, [])
     const onDelete = id => {
-        if (window.confirm("Are you sure to delete this record?"))
-                CategoryService.deleteCategory(id)
+        if (window.confirm("Are you sure to delete this record?")){
+             CategoryService.deleteCategory(id)
+            .then(data => {
                 getCategoriesList()
+            })
+            .catch(error => console.log(error))
+        }
     }
-
     return (
         <Container maxWidth="md">
             <Paper className={classes.paper} elevation={3}  >
                 <Grid container>
                     <Grid item xs={6}>
                         <ToastProvider autoDismiss={true}>
-                            <CategoryForm category={category} setCategory={setCategory} getCategoriesList={getCategoriesList} currentId={currentId} />
+                            <CategoryForm category={category} setCategory={setCategory} getCategoriesList={getCategoriesList} currentId={currentId} setCurrentId= {setCurrentId} />
                         </ToastProvider>
                     </Grid>
                     <Grid item xs={6}>

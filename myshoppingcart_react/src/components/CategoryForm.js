@@ -33,6 +33,7 @@ const CategoryForm = ({ classes, ...props }) => {
     const baseUrl = "https://localhost:44317/api/"
     const [values, setValues] = useState(initialFieldValues)
     const [errors, setErrors] = useState({})
+    const id = props.currentId
 
     useEffect(() => {
         if (props.currentId != 0)
@@ -42,7 +43,6 @@ const CategoryForm = ({ classes, ...props }) => {
         else {
             setValues({
                 ...initialFieldValues,
-
             })
 
         }
@@ -82,34 +82,28 @@ const CategoryForm = ({ classes, ...props }) => {
         setErrors({})
         props.setCurrentId = 0
     }
-
+    const body = {
+        'categoryId': props.currentId,
+        'categoryName': values.categoryName
+    }
+    const addCategory = async () => {
+        const result = await CategoryService.addCategory(body)
+        props.setCategory([...props.category, result.data])
+        resetForm()
+    }
+    const updateCategory = async () => {
+        const result = await CategoryService.editCategory(id, body)
+        .then(data => {
+           props.setCurrentId(0)
+            props.getCategoriesList()
+            resetForm()
+        })
+    }
     //Handle submit
     const handleSubmit = async e => {
-        const id = props.currentId
-
-        const body = {
-            'categoryId': props.currentId,
-            'categoryName': values.categoryName
-        }
-        const getCategoriesList =async () => {
-            const categories = await CategoryService.getCategories()
-            props.setCategory(categories.data)
-        }
-        const addCategory = async () => {
-            const x = await CategoryService.addCategory(body)
-            props.setCategory([...props.category, x.data])
-            resetForm()
-        }
-        const updateCategory = async () => {
-            const x = await CategoryService.editCategory(id, body)
-            getCategoriesList()
-            resetForm()
-            // props.setCategory([  ...props.category.find(x => x.categoryId == props.currentId) , data.data]  )   
-        }
         e.preventDefault()
         console.log(e)
         if (validate()) {
-
             if (props.currentId == 0) {
                 addCategory()
             }
@@ -117,9 +111,7 @@ const CategoryForm = ({ classes, ...props }) => {
                 updateCategory()
             }
         }
-
     }
-
     return (
 
         <div>
