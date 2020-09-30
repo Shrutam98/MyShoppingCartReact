@@ -6,7 +6,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CategoryForm from './CategoryForm';
 import { ToastProvider } from 'react-toast-notifications'
-
+import * as CategoryService from '../Services/CategoryService';
 
 const styles = theme => ({
     root: {
@@ -25,34 +25,22 @@ const styles = theme => ({
     }
 })
 
-const CategoryList = ({ classes, ...props }) => {
+const CategoryList = ({ classes }) => {
 
     const baseUrl = "https://localhost:44317/api/"
     const [category, setCategory] = useState([])
     const [currentId, setCurrentId] = useState(0)
     useEffect(() => {
-        getCategories();
+        getCategoriesList()
     }, [])
-
-    const getCategories = async () => {
-        const result = await axios.get(baseUrl + 'Categories/')
-        setCategory(result.data)
+    const getCategoriesList = async () => {
+        const categories = await CategoryService.getCategories()
+        setCategory(categories.data)
     }
-
-
-    useEffect(() => {
-        getCategories()
-    }, [])
-
     const onDelete = id => {
         if (window.confirm("Are you sure to delete this record?"))
-
-            axios.delete(baseUrl + `Categories/${id}`)
-                .then(data => {
-                    getCategories()
-                })
-                .catch(error => console.log(error))
-
+                CategoryService.deleteCategory(id)
+                getCategoriesList()
     }
 
     return (
@@ -61,7 +49,7 @@ const CategoryList = ({ classes, ...props }) => {
                 <Grid container>
                     <Grid item xs={6}>
                         <ToastProvider autoDismiss={true}>
-                            <CategoryForm category={category} setCategory={setCategory} getCategories={getCategories} currentId={currentId} />
+                            <CategoryForm category={category} setCategory={setCategory} getCategoriesList={getCategoriesList} currentId={currentId} />
                         </ToastProvider>
                     </Grid>
                     <Grid item xs={6}>
@@ -80,7 +68,6 @@ const CategoryList = ({ classes, ...props }) => {
                                     <TableBody>
                                         {
                                             category.map((record, index) => {
-
                                                 return (
 
                                                     <TableRow key={index} hover>

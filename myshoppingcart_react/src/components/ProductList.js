@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import ProductForm from './ProductForm'
-import { Container, Grid, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, withStyles, ButtonGroup, Button } from '@material-ui/core';
+import { Container, Grid, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, withStyles, ButtonGroup, Button,TablePagination } from '@material-ui/core';
 import axios from 'axios'
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { ToastProvider } from 'react-toast-notifications'
+import Common from './Common';
 
 const styles = theme => ({
     root: {
@@ -34,14 +35,21 @@ const ProductList = ({ classes, props }) => {
     const baseUrl = "https://localhost:44317/api/"
     const [product, setProduct] = useState([])
     const [currentId, setCurrentId] = useState(0)
-    useEffect(() => {
-        getProducts();
-    }, [])
-
     const getProducts = async () => {
         const result = await axios.get(baseUrl + 'Products/')
         setProduct(result.data)
     }
+   // const[records,setRecords] = useState(getProducts())
+
+    const {
+        TblPagination
+    } = Common(product)
+
+    useEffect(() => {
+        getProducts();
+    }, [])
+
+   
     const onDelete = id => {
         if (window.confirm("Are you sure to delete this record?"))
             axios.delete(baseUrl + `Products/${id}`)
@@ -108,8 +116,9 @@ const ProductList = ({ classes, props }) => {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
+                                 {/* <TblPagination /> */}
                             </div>
-                            {/* <TablePagination /> */}
+                           
                         </Grid>
                     </Grid>
 

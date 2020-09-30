@@ -3,7 +3,7 @@ import { Grid, TextField, withStyles, Button, FormControl, InputLabel, Select, M
 import '../App.css';
 import axios from 'axios'
 import { useToasts } from 'react-toast-notifications'
-import Category from './Category';
+import Common from './Common';
 
 const styles = theme => ({
     root: {
@@ -46,9 +46,6 @@ const ProductForm = ({ classes, ...props }) => {
     const [values, setValues] = useState(initialFieldValues)
     const [errors, setErrors] = useState({})
     const [category, setCategory] = useState([])
-    const [file, setFile] = useState()
-    const [fileName, setFileName] = useState()
-
 
     //material-ui select
     const inputLabel = React.useRef(null);
@@ -132,19 +129,19 @@ const ProductForm = ({ classes, ...props }) => {
         props.setCurrentId = 0
     }
     const id = props.currentId
+    const data = new FormData()
+    data.append('productId', props.currentId)
+    data.append('productName', values.productName)
+    data.append('categoryId', values.categoryId)
+    data.append('price', values.price)
+    data.append('quantity', values.quantity)
+    data.append('discount', values.discount)
+    data.append('gst', values.gst)
+    data.append('image', values.image)
+    data.append('imageFile', values.imageFile)
+
     //Submit Event
     const handleSubmit = e => {
-
-        const data = new FormData()
-        data.append('productId', props.currentId)
-        data.append('productName', values.productName)
-        data.append('categoryId', values.categoryId)
-        data.append('price', values.price)
-        data.append('quantity', values.quantity)
-        data.append('discount', values.discount)
-        data.append('gst', values.gst)
-        data.append('image', values.image)
-        data.append('imageFile', values.imageFile)
         e.preventDefault()
         if (validate()) {
             if (props.currentId == 0)
@@ -169,10 +166,6 @@ const ProductForm = ({ classes, ...props }) => {
             resetForm()
         }
     }
-
-    useEffect(() => {
-        props.getProducts()
-    }, [id])
 
     return (
         <div>
@@ -262,7 +255,6 @@ const ProductForm = ({ classes, ...props }) => {
                                 type="file"
                                 accept="image/*"
                                 fullWidth
-                                ///value={values.image}
                                 onChange={saveImage}
                             />
                             <div className="buttonDivProduct">

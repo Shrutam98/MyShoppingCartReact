@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Grid, TextField, withStyles, Button, Container, Paper } from '@material-ui/core'
 import axios from 'axios'
 import { useToasts } from 'react-toast-notifications'
+import * as CategoryService from '../Services/CategoryService';
+
 
 //Styles
 const styles = theme => ({
@@ -36,12 +38,14 @@ const CategoryForm = ({ classes, ...props }) => {
         if (props.currentId != 0)
             setValues({
                 ...props.category.find(x => x.categoryId == props.currentId),
-
             })
-        else
+        else {
             setValues({
                 ...initialFieldValues,
+
             })
+
+        }
 
     }, [props.currentId, props.category])
 
@@ -82,30 +86,36 @@ const CategoryForm = ({ classes, ...props }) => {
     //Handle submit
     const handleSubmit = async e => {
         const id = props.currentId
+
         const body = {
             'categoryId': props.currentId,
             'categoryName': values.categoryName
         }
+        const getCategoriesList =async () => {
+            const categories = await CategoryService.getCategories()
+            props.setCategory(categories.data)
+        }
+        const addCategory = async () => {
+            const x = await CategoryService.addCategory(body)
+            props.setCategory([...props.category, x.data])
+            resetForm()
+        }
+        const updateCategory = async () => {
+            const x = await CategoryService.editCategory(id, body)
+            getCategoriesList()
+            resetForm()
+            // props.setCategory([  ...props.category.find(x => x.categoryId == props.currentId) , data.data]  )   
+        }
         e.preventDefault()
         console.log(e)
         if (validate()) {
-            
-            if (props.currentId == 0)
-                await axios.post(baseUrl + 'Categories/', body)                  
-                    .then(data => {
-                        console.log(data)
-                        props.setCategory([...props.category, data.data]
-                        )
-                        resetForm()
-                    })
-                    .catch(error => console.log(error))
-            else
-                await axios.put(baseUrl + `Categories/${props.currentId}`, (id, body))
-                    .then(data => {
-                        // props.setCategory([  ...props.category.find(x => x.categoryId == props.currentId) , data.data]  )   
-                        resetForm()
-                    })
-                    .catch(error => console.log(error))
+
+            if (props.currentId == 0) {
+                addCategory()
+            }
+            else {
+                updateCategory()
+            }
         }
 
     }
