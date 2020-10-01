@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import ProductForm from './ProductForm'
 import { Container, Grid, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, withStyles, ButtonGroup, Button,TablePagination } from '@material-ui/core';
-import axios from 'axios'
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { ToastProvider } from 'react-toast-notifications'
 import Common from './Common';
+import * as ProductService  from "../Services/ProductService";
 
 const styles = theme => ({
     root: {
@@ -35,10 +35,11 @@ const ProductList = ({ classes, props }) => {
     const baseUrl = "https://localhost:44317/api/"
     const [product, setProduct] = useState([])
     const [currentId, setCurrentId] = useState(0)
-    const getProducts = async () => {
-        const result = await axios.get(baseUrl + 'Products/')
-        setProduct(result.data)
+    const getProductList = async () => {
+        const products = await ProductService.getProducts()
+        setProduct(products.data)
     }
+
    // const[records,setRecords] = useState(getProducts())
 
     const {
@@ -46,17 +47,17 @@ const ProductList = ({ classes, props }) => {
     } = Common(product)
 
     useEffect(() => {
-        getProducts();
+        getProductList();
     }, [])
 
-   
     const onDelete = id => {
-        if (window.confirm("Are you sure to delete this record?"))
-            axios.delete(baseUrl + `Products/${id}`)
-                .then(data => {
-                    getProducts()
-                })
-                .catch(error => console.log(error))
+        if (window.confirm("Are you sure to delete this record?")){
+             ProductService.deleteProduct(id)
+            .then(data => {
+                getProductList()
+            })
+            .catch(error => console.log(error))
+        }
     }
 
     return (
@@ -66,7 +67,7 @@ const ProductList = ({ classes, props }) => {
                     <Grid container >
                         <Grid item xs={6}>
                             <ToastProvider autoDismiss={true}>
-                                <ProductForm product={product} setProduct={setProduct} getProducts={getProducts} currentId={currentId} />
+                                <ProductForm product={product} setProduct={setProduct} getProductList={getProductList} currentId={currentId} setCurrentId= {setCurrentId} />
                             </ToastProvider>
                         </Grid>
 

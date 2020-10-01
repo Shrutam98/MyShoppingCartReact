@@ -30,7 +30,6 @@ const initialFieldValues = {
 //
 const CategoryForm = ({ classes, ...props }) => {
     const { addToast } = useToasts()
-    const baseUrl = "https://localhost:44317/api/"
     const [values, setValues] = useState(initialFieldValues)
     const [errors, setErrors] = useState({})
     const id = props.currentId
@@ -66,7 +65,6 @@ const CategoryForm = ({ classes, ...props }) => {
     const handleInputChange = e => {
         const { name, value } = e.target
         const fieldValue = { [name]: value }
-        console.log(fieldValue)
         setValues({
             ...values,
             ...fieldValue
@@ -102,7 +100,6 @@ const CategoryForm = ({ classes, ...props }) => {
     //Handle submit
     const handleSubmit = async e => {
         e.preventDefault()
-        console.log(e)
         if (validate()) {
             if (props.currentId == 0) {
                 addCategory()

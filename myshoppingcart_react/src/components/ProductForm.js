@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Grid, TextField, withStyles, Button, FormControl, InputLabel, Select, MenuItem, Paper } from '@material-ui/core'
 import '../App.css';
-import axios from 'axios'
 import { useToasts } from 'react-toast-notifications'
 import Common from './Common';
+import * as CategoryService from '../Services/CategoryService';
+import * as ProductService from "../Services/ProductService";
 
 const styles = theme => ({
     root: {
@@ -46,24 +47,20 @@ const ProductForm = ({ classes, ...props }) => {
     const [values, setValues] = useState(initialFieldValues)
     const [errors, setErrors] = useState({})
     const [category, setCategory] = useState([])
+    const id = props.currentId
 
     //material-ui select
     const inputLabel = React.useRef(null);
-    const [labelWidth, setLabelWidth] = React.useState(0);
-    React.useEffect(() => {
-        setLabelWidth(inputLabel.current.offsetWidth);
-    }, []);
-
-    const getCategories = async () => {
-        const result = await axios.get(baseUrl + 'Categories/')
-        setCategory(result.data)
+    const [labelWidth, setLabelWidth] = useState(0);
+    const getCategoriesList = async () => {
+        const categories = await CategoryService.getCategories()
+        setCategory(categories.data)
     }
 
     useEffect(() => {
-        getCategories()
-
+        getCategoriesList()
+        setLabelWidth(inputLabel.current.offsetWidth);
         if (props.currentId !== 0)
-
             setValues({
                 ...props.product.find(x => x.productId === props.currentId),
             })
@@ -71,7 +68,6 @@ const ProductForm = ({ classes, ...props }) => {
             setValues({
                 ...initialFieldValues,
             })
-
     }, [props.currentId, props.product])
 
     //Validation
@@ -88,13 +84,10 @@ const ProductForm = ({ classes, ...props }) => {
         })
         if (fieldValues == values)
             return Object.values(temp).every(x => x == "")
-
     }
     const handleInputChange = e => {
         const { name, value } = e.target
         const fieldValue = { [name]: value }
-        console.log(fieldValue)
-
         setValues({
             ...values,
             ...fieldValue
@@ -128,7 +121,6 @@ const ProductForm = ({ classes, ...props }) => {
         setErrors({})
         props.setCurrentId = 0
     }
-    const id = props.currentId
     const data = new FormData()
     data.append('productId', props.currentId)
     data.append('productName', values.productName)
@@ -140,30 +132,31 @@ const ProductForm = ({ classes, ...props }) => {
     data.append('image', values.image)
     data.append('imageFile', values.imageFile)
 
+    const addProduct = async () => {
+        const result = await ProductService.addProduct(data)
+        props.setProduct([...props.product, result.data])
+        resetForm()
+    }
+
+    const updateProduct = async () => {
+        const result = await ProductService.editProduct(id, data)
+            .then(data => {
+                props.setCurrentId(0)
+                props.getProductList()
+                resetForm()
+            })
+    }
+
     //Submit Event
     const handleSubmit = e => {
         e.preventDefault()
         if (validate()) {
-            if (props.currentId == 0)
-                axios.post(baseUrl + 'Products/', data)
-                    .then(data => {
-                        props.setProduct([...props.product, data.data]
-                        )
-                        props.getProducts()
-                        resetForm()
-                    })
-                    .catch(error => console.log(error))
-            else
-                axios.put(baseUrl + `Products/${props.currentId}`, (id, (data)))
-                    .then(data => {
-                        props.setCurrentId(0)
-                        props.getProducts()
-                        // props.setProduct([...props.product.find(x => x.productId == props.currentId), data.data])                     
-                        resetForm()
-
-                    })
-                    .catch(error => console.log(error))
-            resetForm()
+            if (props.currentId == 0) {
+                addProduct()
+            }
+            else {
+                updateProduct()
+            }
         }
     }
 

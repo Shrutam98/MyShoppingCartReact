@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import '../App.css'
-import axios from 'axios'
 import { Container, Grid, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, withStyles, ButtonGroup, Button } from '@material-ui/core';
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -26,7 +25,6 @@ const styles = theme => ({
 })
 
 const CategoryList = ({ classes }) => {
-    const baseUrl = "https://localhost:44317/api/"
     const [category, setCategory] = useState([])
     const [currentId, setCurrentId] = useState(0)
     const getCategoriesList = async () => {
