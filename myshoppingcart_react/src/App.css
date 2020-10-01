@@ -1,13 +1,16 @@
 .App {
   text-align: center;
 }
-.buttonDivCategory{
+.buttonDivCategory {
   margin-top: 10px;
 }
-.categoryTitle{
-  color : #3f51b5;
-  margin : 5px
+.categoryTitle {
+  color: #3f51b5;
+  margin: 5px;
 }
-.tableMargin{
+.tableMargin {
   margin-top: 32px;
+}
+.container {
+  margin-left: 40px;
 }

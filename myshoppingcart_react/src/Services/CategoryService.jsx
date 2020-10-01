@@ -1,18 +1,17 @@
+import { api } from "./api";
 
-import axios from 'axios'
-import {categoryApi} from './api'
+const baseUrl = "https://localhost:44317/api/" + "Categories/";
 
 export const getCategories = () => {
-    return categoryApi.categoryActions().fetchAll()
-}
-
+  return api.actions(baseUrl).fetchAll();
+};
 export const addCategory = async (data) => {
-    return categoryApi.categoryActions().create(data)
-} 
+  return api.actions(baseUrl).create(data);
+};
 
-export const editCategory = async (id,data) => {
-    return categoryApi.categoryActions().update(id,data)
-} 
-export const deleteCategory = async id => {
-    return categoryApi.categoryActions().delete(id)
-} 
+export const editCategory = async (id, data) => {
+  return api.actions(baseUrl).update(id, data);
+};
+export const deleteCategory = async (id) => {
+  return api.actions(baseUrl).delete(id);
+};

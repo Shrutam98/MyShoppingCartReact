@@ -1,10 +1,10 @@
-import React from 'react';
-import './App.css';
-import Navigation from './components/Navigation'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { ToastProvider } from 'react-toast-notifications'
-import ProductList from './components/ProductList';
-import CategoryList from './components/CategoryList';
+import React from "react";
+import "App.css";
+import Navigation from "Shared/Navigation";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import CategoryList from "components/Category/CategoryList";
+import ProductList from "components/Product/ProductList";
+import Dashboard from "Shared/Dashboard";
 
 function App() {
   return (
@@ -12,12 +12,12 @@ function App() {
       <BrowserRouter>
         <Navigation />
         <Switch>
-          <Route path='/' exact component={Navigation} />
-          <Route path='/Category' component={CategoryList} />
-          <Route path='/Product' component={ProductList} />
+          <Route path="/" exact component={Dashboard} />
+          <Route path="/Dashboard" exact component={Dashboard} />
+          <Route path="/Category" component={CategoryList} />
+          <Route path="/Product" component={ProductList} />
         </Switch>
       </BrowserRouter>
-
     </div>
   );
 }

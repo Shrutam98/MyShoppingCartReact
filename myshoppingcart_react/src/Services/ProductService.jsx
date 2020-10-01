@@ -1,22 +1,23 @@
+import { api } from "./api";
 
-import axios from 'axios'
-import { productApi } from './api'
+const baseUrl = "https://localhost:44317/api/" + "Products/";
+const baseUrlCategory = "https://localhost:44317/api/" + "Categories/";
 
 export const getCategories = () => {
-    return productApi.productActions().fetchAllCategory()
-}
+  return api.actions(baseUrlCategory).fetchAllCategory();
+};
 
 export const getProducts = () => {
-    return productApi.productActions().fetchAll()
-}
+  return api.actions(baseUrl).fetchAll();
+};
 
 export const addProduct = async (data) => {
-    return productApi.productActions().create(data)
-}
+  return api.actions(baseUrl).create(data);
+};
 
 export const editProduct = async (id, data) => {
-    return productApi.productActions().update(id, data)
-}
-export const deleteProduct = async id => {
-    return productApi.productActions().delete(id)
-} 
+  return api.actions(baseUrl).update(id, data);
+};
+export const deleteProduct = async (id) => {
+  return api.actions(baseUrl).delete(id);
+};
