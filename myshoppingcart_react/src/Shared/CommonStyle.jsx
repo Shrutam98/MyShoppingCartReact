@@ -49,7 +49,6 @@ export const productFormstyles = () => ({
     margin: "8px",
     width: "100%",
   },
-
   smMargin: {
     margin: "8px",
   },

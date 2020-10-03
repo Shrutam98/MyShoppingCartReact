@@ -10,6 +10,7 @@ import {
 import { useToasts } from "react-toast-notifications";
 import * as CategoryService from "Services/CategoryService";
 import * as CommonStyles from "Shared/CommonStyle";
+import Notification from "Shared/Notification";
 
 const styles = CommonStyles.categoryFormstyles();
 
@@ -24,6 +25,11 @@ const CategoryForm = ({ classes, ...props }) => {
   const [values, setValues] = useState(initialFieldValues);
   const [errors, setErrors] = useState({});
   const id = props.currentId;
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
 
   useEffect(() => {
     if (props.currentId != 0)
@@ -77,12 +83,22 @@ const CategoryForm = ({ classes, ...props }) => {
     const result = await CategoryService.addCategory(body);
     props.setCategory([...props.category, result.data]);
     resetForm();
+    setNotify({
+      isOpen: true,
+      message: "Category Added Successfully",
+      type: "success",
+    });
   };
   const updateCategory = async () => {
     const result = await CategoryService.editCategory(id, body).then((data) => {
       props.setCurrentId(0);
       props.getCategoriesList();
       resetForm();
+      setNotify({
+        isOpen: true,
+        message: "Category Updated Successfully",
+        type: "success",
+      });
     });
   };
   //Handle submit
@@ -133,7 +149,6 @@ const CategoryForm = ({ classes, ...props }) => {
                   className={classes.smMargin}
                   onClick={resetForm}
                 >
-                  {" "}
                   Reset
                 </Button>
               </div>
@@ -141,6 +156,7 @@ const CategoryForm = ({ classes, ...props }) => {
           </Grid>
         </form>
       </div>
+      <Notification notify={notify} setNotify={setNotify} />
     </div>
   );
 };

@@ -25,6 +25,8 @@ import { ToastProvider } from "react-toast-notifications";
 import * as CategoryService from "Services/CategoryService";
 import Common from "Shared/Common";
 import * as CommonStyles from "Shared/CommonStyle";
+import Notification from "Shared/Notification";
+import ConfirmDialog from "Shared/ConfirmDialog";
 
 const styles = CommonStyles.listStyles();
 const headCells = [
@@ -39,6 +41,17 @@ const CategoryList = ({ classes }) => {
       return items;
     },
   });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
+
   const {
     TblPagination,
     recordAftterPagingAndSorting,
@@ -54,13 +67,20 @@ const CategoryList = ({ classes }) => {
     getCategoriesList();
   }, []);
   const onDelete = (id) => {
-    if (window.confirm("Are you sure to delete this record?")) {
-      CategoryService.deleteCategory(id)
-        .then((data) => {
-          getCategoriesList();
-        })
-        .catch((error) => console.log(error));
-    }
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+    CategoryService.deleteCategory(id)
+      .then((data) => {
+        getCategoriesList();
+        setNotify({
+          isOpen: true,
+          message: "Category Deleted Successfully",
+          type: "error",
+        });
+      })
+      .catch((error) => console.log(error));
   };
   const handleSearch = (e) => {
     let target = e.target;
@@ -126,7 +146,16 @@ const CategoryList = ({ classes }) => {
                                   <EditIcon color="primary" />
                                 </Button>
                                 <Button
-                                  onClick={() => onDelete(record.categoryId)}
+                                  onClick={() => {
+                                    setConfirmDialog({
+                                      isOpen: true,
+                                      title:
+                                        "Are you sure to delete this record?",
+                                      onConfirm: () => {
+                                        onDelete(record.categoryId);
+                                      },
+                                    });
+                                  }}
                                 >
                                   <DeleteIcon color="secondary" />
                                 </Button>
@@ -151,8 +180,12 @@ const CategoryList = ({ classes }) => {
           </Grid>
         </Paper>
       </Container>
+      <Notification notify={notify} setNotify={setNotify} />
+      <ConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
     </div>
   );
 };
-
 export default withStyles(styles)(CategoryList);

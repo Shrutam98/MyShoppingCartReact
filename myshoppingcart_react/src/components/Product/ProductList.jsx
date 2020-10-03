@@ -27,6 +27,8 @@ import { ToastProvider } from "react-toast-notifications";
 import Common from "Shared/Common";
 import * as ProductService from "Services/ProductService";
 import * as CommonStyles from "Shared/CommonStyle";
+import Notification from "Shared/Notification";
+import ConfirmDialog from "Shared/ConfirmDialog";
 
 const styles = CommonStyles.listStyles();
 const headCells = [
@@ -49,7 +51,16 @@ const ProductList = ({ classes }) => {
       return items;
     },
   });
-
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
   const getProductList = async () => {
     const products = await ProductService.getProducts();
     setProduct(products.data);
@@ -65,13 +76,20 @@ const ProductList = ({ classes }) => {
     getProductList();
   }, []);
   const onDelete = (id) => {
-    if (window.confirm("Are you sure to delete this record?")) {
-      ProductService.deleteProduct(id)
-        .then((data) => {
-          getProductList();
-        })
-        .catch((error) => console.log(error));
-    }
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+    ProductService.deleteProduct(id)
+      .then((data) => {
+        getProductList();
+        setNotify({
+          isOpen: true,
+          message: "Product Deleted Successfully",
+          type: "error",
+        });
+      })
+      .catch((error) => console.log(error));
   };
   const handleSearch = (e) => {
     let target = e.target;
@@ -144,7 +162,16 @@ const ProductList = ({ classes }) => {
                                   <EditIcon color="primary" />
                                 </Button>
                                 <Button
-                                  onClick={() => onDelete(record.productId)}
+                                  onClick={() => {
+                                    setConfirmDialog({
+                                      isOpen: true,
+                                      title:
+                                        "Are you sure to delete this record?",
+                                      onConfirm: () => {
+                                        onDelete(record.productId);
+                                      },
+                                    });
+                                  }}
                                 >
                                   <DeleteIcon color="secondary" />
                                 </Button>
@@ -169,6 +196,11 @@ const ProductList = ({ classes }) => {
           </Grid>
         </Paper>
       </Container>
+      <Notification notify={notify} setNotify={setNotify} />
+      <ConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
     </div>
   );
 };

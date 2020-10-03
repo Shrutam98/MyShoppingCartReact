@@ -16,6 +16,7 @@ import Common from "Shared/Common";
 import * as CategoryService from "Services/CategoryService";
 import * as ProductService from "Services/ProductService";
 import * as CommonStyles from "Shared/CommonStyle";
+import Notification from "Shared/Notification";
 
 const styles = CommonStyles.productFormstyles();
 const initialFieldValues = {
@@ -37,6 +38,11 @@ const ProductForm = ({ classes, ...props }) => {
   const [errors, setErrors] = useState({});
   const [category, setCategory] = useState([]);
   const id = props.currentId;
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
 
   //material-ui select
   const inputLabel = React.useRef(null);
@@ -127,6 +133,11 @@ const ProductForm = ({ classes, ...props }) => {
     props.setProduct([...props.product, result.data]);
     props.getProductList();
     resetForm();
+    setNotify({
+      isOpen: true,
+      message: "Product Added Successfully",
+      type: "success",
+    });
   };
 
   const updateProduct = async () => {
@@ -134,6 +145,11 @@ const ProductForm = ({ classes, ...props }) => {
       props.setCurrentId(0);
       props.getProductList();
       resetForm();
+      setNotify({
+        isOpen: true,
+        message: "Product Updated Successfully",
+        type: "success",
+      });
     });
   };
 
@@ -257,7 +273,6 @@ const ProductForm = ({ classes, ...props }) => {
                   className={classes.smMargin}
                   onClick={resetForm}
                 >
-                  {" "}
                   Reset
                 </Button>
               </div>
@@ -265,6 +280,7 @@ const ProductForm = ({ classes, ...props }) => {
           </Grid>
         </form>
       </div>
+      <Notification notify={notify} setNotify={setNotify} />
     </div>
   );
 };
