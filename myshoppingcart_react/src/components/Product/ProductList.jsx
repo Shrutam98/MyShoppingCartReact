@@ -15,25 +15,52 @@ import {
   ButtonGroup,
   Button,
   TablePagination,
+  TableSortLabel,
+  Toolbar,
+  TextField,
+  InputAdornment,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import Search from "@material-ui/icons/Search";
 import { ToastProvider } from "react-toast-notifications";
 import Common from "Shared/Common";
 import * as ProductService from "Services/ProductService";
 import * as CommonStyles from "Shared/CommonStyle";
 
 const styles = CommonStyles.listStyles();
-const ProductList = ({ classes, props }) => {
+const headCells = [
+  { id: "productName", label: "Product" },
+  { id: "category", label: "Category", disableSorting: true },
+  { id: "price", label: "Price" },
+  { id: "quantity", label: "Quantity" },
+  { id: "discount", label: "Discount" },
+  { id: "gst", label: "GST" },
+  { id: "image", label: "Product Image", disableSorting: true },
+  { id: "actions", label: "Actions", disableSorting: true },
+];
+
+const ProductList = ({ classes }) => {
   const baseUrl = "https://localhost:44317/api/";
   const [product, setProduct] = useState([]);
   const [currentId, setCurrentId] = useState(0);
+  const [filterFn, setFilterFn] = useState({
+    fn: (items) => {
+      return items;
+    },
+  });
+
   const getProductList = async () => {
     const products = await ProductService.getProducts();
     setProduct(products.data);
   };
-  const { TblPagination } = Common(product);
-
+  const {
+    TblPagination,
+    recordAftterPagingAndSorting,
+    TblHead,
+    emptyRows,
+    dense,
+  } = Common(product, headCells, filterFn);
   useEffect(() => {
     getProductList();
   }, []);
@@ -46,7 +73,18 @@ const ProductList = ({ classes, props }) => {
         .catch((error) => console.log(error));
     }
   };
-
+  const handleSearch = (e) => {
+    let target = e.target;
+    setFilterFn({
+      fn: (items) => {
+        if (target.value == "") return items;
+        else
+          return items.filter((x) =>
+            x.productName.toLowerCase().includes(target.value)
+          );
+      },
+    });
+  };
   return (
     <div className="container">
       <Container maxWidth="md">
@@ -68,26 +106,27 @@ const ProductList = ({ classes, props }) => {
               <h1 className="categoryTitle">List of Products</h1>
               <hr />
               <div className="tableMargin">
+                <Toolbar className={classes.searchtxtbox}>
+                  <TextField
+                    label="Search"
+                    variant="outlined"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search />
+                        </InputAdornment>
+                      ),
+                    }}
+                    onChange={handleSearch}
+                  />
+                </Toolbar>
                 <TableContainer>
                   <Table>
-                    <TableHead className={classes.root}>
-                      <TableRow>
-                        <TableCell>Id</TableCell>
-                        <TableCell>Product</TableCell>
-                        <TableCell>Category</TableCell>
-                        <TableCell>Price</TableCell>
-                        <TableCell>Quantity</TableCell>
-                        <TableCell>Discount</TableCell>
-                        <TableCell>GST</TableCell>
-                        <TableCell>Image</TableCell>
-                        <TableCell>Actions</TableCell>
-                      </TableRow>
-                    </TableHead>
+                    <TblHead className={classes.root} />
                     <TableBody>
-                      {product.map((record, index) => {
+                      {recordAftterPagingAndSorting().map((record, index) => {
                         return (
                           <TableRow key={index} hover>
-                            <TableCell>{index + 1}</TableCell>
                             <TableCell>{record.productName}</TableCell>
                             <TableCell>
                               {record.category?.categoryName}
@@ -114,10 +153,17 @@ const ProductList = ({ classes, props }) => {
                           </TableRow>
                         );
                       })}
+                      {emptyRows > 0 && (
+                        <TableRow
+                          style={{ height: (dense ? 33 : 53) * emptyRows }}
+                        >
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
-                {/* <TblPagination /> */}
+                <TblPagination />
               </div>
             </Grid>
           </Grid>

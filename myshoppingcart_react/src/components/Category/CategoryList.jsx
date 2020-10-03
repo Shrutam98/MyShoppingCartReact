@@ -13,18 +13,39 @@ import {
   withStyles,
   ButtonGroup,
   Button,
+  TextField,
+  Toolbar,
+  InputAdornment,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import Search from "@material-ui/icons/Search";
 import CategoryForm from "components/Category/CategoryForm";
 import { ToastProvider } from "react-toast-notifications";
 import * as CategoryService from "Services/CategoryService";
+import Common from "Shared/Common";
 import * as CommonStyles from "Shared/CommonStyle";
 
 const styles = CommonStyles.listStyles();
+const headCells = [
+  { id: "categoryName", label: "Category" },
+  { id: "actions", label: "Actions", disableSorting: true },
+];
 const CategoryList = ({ classes }) => {
   const [category, setCategory] = useState([]);
   const [currentId, setCurrentId] = useState(0);
+  const [filterFn, setFilterFn] = useState({
+    fn: (items) => {
+      return items;
+    },
+  });
+  const {
+    TblPagination,
+    recordAftterPagingAndSorting,
+    TblHead,
+    emptyRows,
+    dense,
+  } = Common(category, headCells, filterFn);
   const getCategoriesList = async () => {
     const categories = await CategoryService.getCategories();
     setCategory(categories.data);
@@ -40,6 +61,18 @@ const CategoryList = ({ classes }) => {
         })
         .catch((error) => console.log(error));
     }
+  };
+  const handleSearch = (e) => {
+    let target = e.target;
+    setFilterFn({
+      fn: (items) => {
+        if (target.value == "") return items;
+        else
+          return items.filter((x) =>
+            x.categoryName.toLowerCase().includes(target.value)
+          );
+      },
+    });
   };
   return (
     <div className="container">
@@ -61,20 +94,27 @@ const CategoryList = ({ classes }) => {
               <h1 className="categoryTitle">List of Category</h1>
               <hr></hr>
               <div className="tableMargin">
+                <Toolbar className={classes.searchtxtbox}>
+                  <TextField
+                    label="Search"
+                    variant="outlined"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search />
+                        </InputAdornment>
+                      ),
+                    }}
+                    onChange={handleSearch}
+                  />
+                </Toolbar>
                 <TableContainer>
                   <Table>
-                    <TableHead className={classes.root}>
-                      <TableRow>
-                        <TableCell>Id</TableCell>
-                        <TableCell>Category</TableCell>
-                        <TableCell>Actions</TableCell>
-                      </TableRow>
-                    </TableHead>
+                    <TblHead className={classes.root} />
                     <TableBody>
-                      {category.map((record, index) => {
+                      {recordAftterPagingAndSorting().map((record, index) => {
                         return (
                           <TableRow key={index} hover>
-                            <TableCell>{index + 1}</TableCell>
                             <TableCell>{record.categoryName}</TableCell>
                             <TableCell>
                               <ButtonGroup variant="text">
@@ -95,9 +135,17 @@ const CategoryList = ({ classes }) => {
                           </TableRow>
                         );
                       })}
+                      {emptyRows > 0 && (
+                        <TableRow
+                          style={{ height: (dense ? 33 : 53) * emptyRows }}
+                        >
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
+                <TblPagination />
               </div>
             </Grid>
           </Grid>

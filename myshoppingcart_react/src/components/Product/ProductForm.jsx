@@ -69,7 +69,8 @@ const ProductForm = ({ classes, ...props }) => {
     if ("price" in fieldValues)
       temp.price = fieldValues.price ? "" : "This field is Required";
     if ("categoryId" in fieldValues)
-      temp.categoryId = fieldValues.categoryId ? "" : "This field is Required";
+      temp.categoryId =
+        fieldValues.categoryId.length != 0 ? "" : "This field is Required";
     setErrors({
       ...temp,
     });
@@ -124,6 +125,7 @@ const ProductForm = ({ classes, ...props }) => {
   const addProduct = async () => {
     const result = await ProductService.addProduct(data);
     props.setProduct([...props.product, result.data]);
+    props.getProductList();
     resetForm();
   };
 
@@ -191,7 +193,6 @@ const ProductForm = ({ classes, ...props }) => {
                 >
                   {category.map((item) => (
                     <MenuItem key={item.categoryId} value={item.categoryId}>
-                      {" "}
                       {item.categoryName}
                     </MenuItem>
                   ))}

@@ -1,3 +1,5 @@
+import { makeStyles } from "@material-ui/core";
+
 export const listStyles = () => ({
   root: {
     "& .MuiTableCell-head": {
@@ -5,10 +7,17 @@ export const listStyles = () => ({
       color: "white",
       background: "#3f51b5",
     },
+    " & .MuiTableSortLabel-root:hover": {
+      color: "white",
+    },
   },
   paper: {
     margin: "16px",
     padding: "16px",
+  },
+  searchtxtbox: {
+    paddingLeft: "0px",
+    paddingBottom: "15px",
   },
 });
 
