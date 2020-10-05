@@ -31,7 +31,7 @@ const useStyles = makeStyles({
     maxWidth: 345,
   },
   media: {
-    height: 50,
+    height: 95,
     width: 200,
     margin: 10,
   },
@@ -51,12 +51,10 @@ const Dashboard = () => {
   const [labelWidth, setLabelWidth] = useState(0);
   const [values, setValues] = useState(initialFieldValues);
   const [inputChange, setInputChange] = useState(false);
-
-  const [filterFn, setFilterFn] = useState({
-    fn: (items) => {
-      return items;
-    },
-  });
+  const [searchInput, setSearchInput] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const [categoryId, setCategoryId] = useState(0);
+  const imagePath = "https://localhost:44317/Images";
   const classes = useStyles();
   const getProductList = async () => {
     const products = await ProductService.getProducts();
@@ -71,43 +69,48 @@ const Dashboard = () => {
     getCategoriesList();
     getProductList();
   }, []);
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    const fieldValue = { [name]: value };
-    setValues({
-      ...values,
-      ...fieldValue,
-    });
-  };
-  const searchResult = () => {
-    return filterFn.fn(product);
+    console.log(e);
+    setCategoryId(e.target.value);
   };
   const handleSearch = (e) => {
     let target = e.target;
-    setFilterFn({
-      fn: (items) => {
-        if (target.value == "") return items;
-        else
-          return items.filter((x) =>
-            x.productName.toLowerCase().includes(target.value)
-          );
-      },
-    });
+    setSearchInput(target.value);
   };
   const handleCheckInput = (e) => {
-    let target = e.target;
+    let target = e.target.checked;
+    setInputChange(target);
   };
+  useEffect(() => {
+    let dataAfterFilter = inputChange
+      ? product.filter(
+          (x) =>
+            x.quantity > 0 &&
+            x.productName.toLowerCase().includes(searchInput.toLowerCase())
+        )
+      : product.filter((x) =>
+          x.productName.toLowerCase().includes(searchInput.toLowerCase())
+        );
+    if (categoryId !== 0) {
+      dataAfterFilter = dataAfterFilter.filter(
+        (x) => x.categoryId === categoryId
+      );
+    }
+    setSearchResult(dataAfterFilter);
+  }, [inputChange, searchInput, categoryId, product]);
+
   return (
     <div className="containerDashboard">
       <div className="d-flex containerDashboard">
-        <FormControl variant="outlined" className={classes.formControl}>
+        <FormControl
+          variant="outlined"
+          className={classes.formControl}
+          value={product.categoryId}
+        >
           <InputLabel ref={inputLabel}>Category</InputLabel>
-          <Select
-            name="categoryId"
-            value={values.categoryId}
-            onChange={handleInputChange}
-            labelWidth={labelWidth}
-          >
+          <Select onChange={handleInputChange} labelWidth={labelWidth}>
+            <MenuItem value={0}>--Slect Category--</MenuItem>
             {category.map((item) => (
               <MenuItem key={item.categoryId} value={item.categoryId}>
                 {item.categoryName}
@@ -116,7 +119,8 @@ const Dashboard = () => {
           </Select>
         </FormControl>
         <FormControlLabel
-          handleInputChange={handleCheckInput}
+          value={values.categoryId}
+          onChange={handleCheckInput}
           control={<Checkbox color="primary" />}
           label="Available"
           labelPlacement="end"
@@ -139,7 +143,7 @@ const Dashboard = () => {
         </Toolbar>
       </div>
       <div className="imageStyle">
-        {searchResult().map((record, index) => {
+        {searchResult.map((record, index) => {
           return (
             <div key={index}>
               <Container maxWidth="md" className="py-4">
@@ -147,7 +151,8 @@ const Dashboard = () => {
                   <CardActionArea>
                     <CardMedia
                       className={classes.media}
-                      image={samsung}
+                      // image={samsung}
+                      image={`https://localhost:44317/Images/${record.image}`}
                       title="Contemplative Reptile"
                     />
                     <CardContent>
