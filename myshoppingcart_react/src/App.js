@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import CategoryList from "components/Category/CategoryList";
 import ProductList from "components/Product/ProductList";
 import Dashboard from "Shared/Dashboard";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (

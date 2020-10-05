@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   dialog: {
     padding: theme.spacing(2),
     position: "absolute",
-    top: theme.spacing(5),
+    top: theme.spacing(3),
   },
   dialogTitle: {
     textAlign: "center",

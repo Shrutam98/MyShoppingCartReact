@@ -15,9 +15,11 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import DashboardRoundedIcon from "@material-ui/icons/DashboardRounded";
-import CategoryRoundedIcon from "@material-ui/icons/CategoryRounded";
+import HomeIcon from "@material-ui/icons/Home";
+import AppsIcon from "@material-ui/icons/Apps";
+import LocalMallIcon from "@material-ui/icons/LocalMall";
 import { NavLink } from "react-router-dom";
+import LocalGroceryStoreIcon from "@material-ui/icons/LocalGroceryStore";
 
 const drawerWidth = 240;
 
@@ -36,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiListItemText-root": {
       textDecoration: "none",
+    },
+    "& .MuiSvgIcon-root": {
+      fontSize: "35px",
     },
   },
   appBar: {
@@ -130,7 +135,10 @@ export default function PersistentDrawerLeft() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            My Shopping Cart
+            <div className="d-flex">
+              <LocalGroceryStoreIcon />
+              <h5 className="ml-2 mt-1">My Shopping Cart</h5>
+            </div>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -166,7 +174,7 @@ export default function PersistentDrawerLeft() {
           >
             <ListItem button>
               <ListItemIcon>
-                <DashboardRoundedIcon color="primary" />
+                <HomeIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary={"Dashboard"} />
             </ListItem>
@@ -183,7 +191,7 @@ export default function PersistentDrawerLeft() {
           >
             <ListItem button>
               <ListItemIcon>
-                <CategoryRoundedIcon color="primary" />
+                <AppsIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary={"Categories"} />
             </ListItem>
@@ -200,7 +208,7 @@ export default function PersistentDrawerLeft() {
           >
             <ListItem button>
               <ListItemIcon>
-                <DashboardRoundedIcon color="primary" />
+                <LocalMallIcon color="primary" />
               </ListItemIcon>
               <ListItemText
                 className={classes.decoration}

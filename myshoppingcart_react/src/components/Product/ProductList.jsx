@@ -43,7 +43,6 @@ const headCells = [
 ];
 
 const ProductList = ({ classes }) => {
-  const baseUrl = "https://localhost:44317/api/";
   const [product, setProduct] = useState([]);
   const [currentId, setCurrentId] = useState(0);
   const [filterFn, setFilterFn] = useState({
@@ -119,7 +118,6 @@ const ProductList = ({ classes }) => {
                 />
               </ToastProvider>
             </Grid>
-
             <Grid item xs={6}>
               <h1 className="categoryTitle">List of Products</h1>
               <hr />

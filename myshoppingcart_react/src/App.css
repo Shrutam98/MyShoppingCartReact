@@ -9,8 +9,17 @@
   margin: 5px;
 }
 .tableMargin {
-  margin-top: 32px;
+  margin-top: 42px;
 }
 .container {
   margin-left: 40px;
+}
+.containerDashboard {
+  margin-left: 65px;
+}
+.imageStyle {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin-left: 163px;
 }
