@@ -95,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 0,
   },
   navlink: {
+    color: "white",
     textDecoration: "none",
   },
   decoration: {
@@ -135,9 +136,21 @@ export default function PersistentDrawerLeft() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            <div className="d-flex">
-              <LocalGroceryStoreIcon />
-              <h5 className="ml-2 mt-1">My Shopping Cart</h5>
+            <div className="d-flex linkMain">
+              <NavLink
+                className="ml-2 mt-1"
+                to="/"
+                exact
+                style={{ textDecoration: "none", color: "white" }}
+                activeStyle={{
+                  color: "white",
+                  textDecoration: "none",
+                }}
+                className={classes.navlink}
+              >
+                <LocalGroceryStoreIcon className="mr-2" />
+                My Shopping Cart
+              </NavLink>
             </div>
           </Typography>
         </Toolbar>

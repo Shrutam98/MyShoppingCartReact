@@ -30,10 +30,8 @@ const Common = (product, headCells, filterFn) => {
   const [order, setOrder] = useState();
   const [orderBy, setOrderBy] = useState();
   const [dense, setDense] = React.useState(false);
-
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, product.length - page * rowsPerPage);
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -41,7 +39,6 @@ const Common = (product, headCells, filterFn) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
   const classes = useStyles();
   const TblHead = (props) => {
     const handleSort = (cellId) => {
@@ -77,7 +74,6 @@ const Common = (product, headCells, filterFn) => {
       </TableHead>
     );
   };
-
   const TblPagination = () => (
     <TablePagination
       component="div"
@@ -98,13 +94,11 @@ const Common = (product, headCells, filterFn) => {
     });
     return stabilizedThis.map((el) => el[0]);
   }
-
   function getComparator(order, orderBy) {
     return order === "desc"
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
   }
-
   function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
       return -1;
@@ -114,16 +108,19 @@ const Common = (product, headCells, filterFn) => {
     }
     return 0;
   }
-
   const recordAftterPagingAndSorting = () => {
     return stableSort(
       filterFn.fn(product),
       getComparator(order, orderBy)
     ).slice(page * rowsPerPage, (page + 1) * rowsPerPage);
   };
+  const recordAftterPaging = () => {
+    return product.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  };
   return {
     TblPagination,
     recordAftterPagingAndSorting,
+    recordAftterPaging,
     TblHead,
     emptyRows,
     dense,

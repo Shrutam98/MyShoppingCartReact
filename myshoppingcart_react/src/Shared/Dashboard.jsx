@@ -18,13 +18,16 @@ import {
   InputAdornment,
   Checkbox,
   FormControlLabel,
+  Switch,
 } from "@material-ui/core/";
 import * as ProductService from "Services/ProductService";
 import * as CategoryService from "Services/CategoryService";
-import apple from "Images/apple.png";
-import samsung from "Images/samsung.png";
 import Search from "@material-ui/icons/Search";
 import Common from "Shared/Common";
+import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import LocalGroceryStoreIcon from "@material-ui/icons/LocalGroceryStore";
+import { Link, BrowserRouter, Route } from "react-router-dom";
+import Cart from "Shared/Cart";
 
 const useStyles = makeStyles({
   root: {
@@ -44,7 +47,7 @@ const initialFieldValues = {
   categoryId: "",
 };
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   const [product, setProduct] = useState([]);
   const [category, setCategory] = useState([]);
   const inputLabel = React.useRef(null);
@@ -54,8 +57,11 @@ const Dashboard = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [categoryId, setCategoryId] = useState(0);
+  const [cart, setCart] = useState([]);
+  const [page, setPage] = useState("products");
   const imagePath = "https://localhost:44317/Images";
   const classes = useStyles();
+  const { TblPagination, recordAftterPaging } = Common(product);
   const getProductList = async () => {
     const products = await ProductService.getProducts();
     setProduct(products.data);
@@ -69,7 +75,6 @@ const Dashboard = () => {
     getCategoriesList();
     getProductList();
   }, []);
-
   const handleInputChange = (e) => {
     console.log(e);
     setCategoryId(e.target.value);
@@ -83,6 +88,7 @@ const Dashboard = () => {
     setInputChange(target);
   };
   useEffect(() => {
+    const data = recordAftterPaging();
     let dataAfterFilter = inputChange
       ? product.filter(
           (x) =>
@@ -100,85 +106,137 @@ const Dashboard = () => {
     setSearchResult(dataAfterFilter);
   }, [inputChange, searchInput, categoryId, product]);
 
+  const addToCart = (record) => {
+    setCart([...cart, record]);
+    console.log("cart", cart);
+  };
+
   return (
-    <div className="containerDashboard">
-      <div className="d-flex containerDashboard">
-        <FormControl
-          variant="outlined"
-          className={classes.formControl}
-          value={product.categoryId}
-        >
-          <InputLabel ref={inputLabel}>Category</InputLabel>
-          <Select onChange={handleInputChange} labelWidth={labelWidth}>
-            <MenuItem value={0}>--Slect Category--</MenuItem>
-            {category.map((item) => (
-              <MenuItem key={item.categoryId} value={item.categoryId}>
-                {item.categoryName}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControlLabel
-          value={values.categoryId}
-          onChange={handleCheckInput}
-          control={<Checkbox color="primary" />}
-          label="Available"
-          labelPlacement="end"
-          className="ml-5"
-        />
-        <Toolbar className="ml-0">
-          <TextField
-            label="Search"
+    <>
+      <div className="containerDashboard">
+        <div className="d-flex containerDashboard">
+          <FormControl
             variant="outlined"
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
+            className={classes.formControl}
+            value={product.categoryId}
+          >
+            <InputLabel ref={inputLabel}>Category</InputLabel>
+            <Select onChange={handleInputChange} labelWidth={labelWidth}>
+              <MenuItem value={0}>--Slect Category--</MenuItem>
+              {category.map((item) => (
+                <MenuItem key={item.categoryId} value={item.categoryId}>
+                  {item.categoryName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControlLabel
+            value={values.categoryId}
+            onChange={handleCheckInput}
+            control={<Checkbox color="primary" />}
+            label="Available"
+            labelPlacement="end"
+            className="ml-5"
           />
-        </Toolbar>
+          <Toolbar className="ml-0">
+            <TextField
+              label="Search"
+              variant="outlined"
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={handleSearch}
+            />
+          </Toolbar>
+          <Link
+            to={{
+              pathname: "/Cart",
+              title: "hii",
+              cart: { cart },
+              product: { product },
+            }}
+            //to="/Cart"
+            style={{ textDecoration: "none", color: "black" }}
+            className="pt-1 ml-4"
+            cart={cart}
+            product={product}
+          >
+            <Button variant="contained" color="primary" className="p-3">
+              Go to Cart ({cart.length})
+              <LocalGroceryStoreIcon className="ml-1 pl-1" />
+            </Button>
+          </Link>
+        </div>
+        <hr />
+        <h2 className="productTitle" style={{ color: "#3f51b5" }}>
+          Products
+        </h2>
+        <div className="imageStyle">
+          {recordAftterPaging().map((record, index) => {
+            return (
+              <div key={index}>
+                <Container maxWidth="md" className="py-4">
+                  <Card className={classes.root}>
+                    <CardActionArea style={{ cursor: "auto" }}>
+                      <CardMedia
+                        className={classes.media}
+                        image={`https://localhost:44317/Images/${record.image}`}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="h2">
+                          Name :{record.productName}
+                        </Typography>
+                        <Typography
+                          variant="h5"
+                          component="h2"
+                          className="font-weigh-bold"
+                        >
+                          ₹ {record.price}
+                        </Typography>
+                        <Typography gutterBottom variant="h5" component="h2">
+                          Quantity :{record.quantity}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                    <CardActions
+                      style={{
+                        background: "#3f51b5",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {record.quantity > 0 ? (
+                        <Button
+                          size="large"
+                          style={{ color: "white", outline: "none" }}
+                          endIcon={<AddShoppingCartIcon className="ml-1" />}
+                          className="px-4"
+                          onClick={() => addToCart(record)}
+                        >
+                          Add to Cart
+                        </Button>
+                      ) : (
+                        <h6
+                          style={{ color: "white" }}
+                          className="py-2 my-1 m-0"
+                        >
+                          Not in stock
+                        </h6>
+                      )}
+                    </CardActions>
+                  </Card>
+                </Container>
+              </div>
+            );
+          })}
+        </div>
+        <TblPagination />
       </div>
-      <div className="imageStyle">
-        {searchResult.map((record, index) => {
-          return (
-            <div key={index}>
-              <Container maxWidth="md" className="py-4">
-                <Card className={classes.root}>
-                  <CardActionArea>
-                    <CardMedia
-                      className={classes.media}
-                      // image={samsung}
-                      image={`https://localhost:44317/Images/${record.image}`}
-                      title="Contemplative Reptile"
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {record.productName}
-                      </Typography>
-                      <Typography variant="h5" component="h2">
-                        $ {record.price}
-                      </Typography>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {record.quantity}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions>
-                    <Button size="small" color="primary">
-                      Add to Cart
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Container>
-            </div>
-          );
-        })}
-      </div>
-    </div>
+    </>
   );
 };
 

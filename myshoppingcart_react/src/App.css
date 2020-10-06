@@ -23,3 +23,7 @@
   flex-direction: row;
   margin-left: 163px;
 }
+.productTitle {
+  color: "#3f51b5";
+  font-weight: bold;
+}

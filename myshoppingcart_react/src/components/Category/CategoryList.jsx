@@ -6,7 +6,6 @@ import {
   Paper,
   TableContainer,
   Table,
-  TableHead,
   TableRow,
   TableCell,
   TableBody,
@@ -51,7 +50,6 @@ const CategoryList = ({ classes }) => {
     title: "",
     subTitle: "",
   });
-
   const {
     TblPagination,
     recordAftterPagingAndSorting,
@@ -86,7 +84,7 @@ const CategoryList = ({ classes }) => {
     let target = e.target;
     setFilterFn({
       fn: (items) => {
-        if (target.value == "") return items;
+        if (target.value === "") return items;
         else
           return items.filter((x) =>
             x.categoryName.toLowerCase().includes(target.value)
