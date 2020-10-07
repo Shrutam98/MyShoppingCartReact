@@ -27,6 +27,7 @@ import Common from "Shared/Common";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import LocalGroceryStoreIcon from "@material-ui/icons/LocalGroceryStore";
 import { Link } from "react-router-dom";
+import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 
 const useStyles = makeStyles({
   root: {
@@ -43,6 +44,7 @@ const useStyles = makeStyles({
 });
 const initialFieldValues = {
   categoryId: "",
+  quantity: 0,
 };
 
 const Dashboard = () => {
@@ -56,6 +58,8 @@ const Dashboard = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [categoryId, setCategoryId] = useState(0);
   const [cart, setCart] = useState([]);
+  const [quantity, setQuantity] = useState(0);
+  const [currentId, setCurrentId] = useState(0);
   const imagePath = "https://localhost:44317/Images/";
   const classes = useStyles();
   const { TblPagination, recordAftterPaging, page, rowsPerPage } = Common(
@@ -104,8 +108,27 @@ const Dashboard = () => {
     setSearchResult(dataAfterFilter);
   }, [inputChange, searchInput, categoryId, product, rowsPerPage, page]);
   const addToCart = (record) => {
-    setCart([...cart, record]);
-    console.log("cart", cart);
+    debugger;
+    setQuantity(record.quantity--);
+    let newCart = [...cart];
+    let itemInCart = newCart.find((x) => x.productId === record.productId);
+    if (itemInCart) {
+      itemInCart.quantity++;
+    } else {
+      itemInCart = {
+        ...record,
+        quantity: 1,
+      };
+      newCart.push(itemInCart);
+    }
+    setCart(newCart);
+  };
+  const clearCart = (product) => {
+    setCart([]);
+    getProductList();
+  };
+  const getCartTotal = () => {
+    return cart.reduce((sum, { quantity }) => sum + quantity, 0);
   };
 
   return (
@@ -156,6 +179,7 @@ const Dashboard = () => {
               title: "hii",
               cart: { cart },
               product: { product },
+              setCart: { setCart },
             }}
             style={{ textDecoration: "none", color: "black" }}
             className="pt-1 ml-4"
@@ -163,10 +187,21 @@ const Dashboard = () => {
             product={product}
           >
             <Button variant="contained" color="primary" className="p-3 ml-1">
-              Go to Cart ({cart.length})
+              Go to Cart ({getCartTotal()})
               <LocalGroceryStoreIcon className="ml-1 pl-1" />
             </Button>
           </Link>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            className="ml-5 mt-1"
+            style={{ height: "56px", outline: "none" }}
+            onClick={() => clearCart(product)}
+          >
+            Clear Cart
+            <RemoveShoppingCartIcon className="ml-1 pl-1" />
+          </Button>
         </div>
         <hr />
         <h2 className="productTitle" style={{ color: "#3f51b5" }}>
@@ -176,7 +211,7 @@ const Dashboard = () => {
           {searchResult.map((record, index) => {
             return (
               <div key={index}>
-                <Container maxWidth="md" className="py-2">
+                <Container maxWidth="md" className="py-3">
                   <Card className={classes.root}>
                     <CardActionArea style={{ cursor: "auto" }}>
                       <CardMedia
@@ -185,7 +220,7 @@ const Dashboard = () => {
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
-                          Name :{record.productName}
+                          Name : {record.productName}
                         </Typography>
                         <Typography
                           variant="h5"

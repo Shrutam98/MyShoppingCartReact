@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -46,6 +46,16 @@ const useStyles = makeStyles({
 const Cart = (props) => {
   const { TblHead } = Common(props.location.product, headCells);
   const classes = useStyles();
+  useEffect(() => {}, [props.location.cart]);
+  const onDelete = (productToRemove) => {
+    debugger;
+    props.location.setCart.setCart(
+      props.location.cart.cart.splice((product) => product !== productToRemove)
+    );
+  };
+  const getTotalPrice = () => {
+    return props.location.cart.cart.reduce((sum, { price }) => sum + price, 0);
+  };
   return (
     <>
       {
@@ -89,18 +99,7 @@ const Cart = (props) => {
                                   <TableCell>{record.gst}</TableCell>
                                   <TableCell>{record.image}</TableCell>
                                   <TableCell>
-                                    <Button
-                                    //   onClick={() => {
-                                    //     setConfirmDialog({
-                                    //       isOpen: true,
-                                    //       title:
-                                    //         "Are you sure to delete this record?",
-                                    //       onConfirm: () => {
-                                    //         onDelete(record.productId);
-                                    //       },
-                                    //     });
-                                    //   }}
-                                    >
+                                    <Button onClick={() => onDelete(record)}>
                                       <RemoveShoppingCartIcon color="secondary" />
                                     </Button>
                                   </TableCell>
@@ -116,6 +115,8 @@ const Cart = (props) => {
               </Paper>
             </Container>
           </div>
+
+          <h2 className="mt-2">Total Coast : ₹ {getTotalPrice()} </h2>
         </div>
       }
     </>

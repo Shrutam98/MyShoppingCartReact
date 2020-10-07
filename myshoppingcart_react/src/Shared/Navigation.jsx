@@ -100,6 +100,7 @@ const useStyles = makeStyles((theme) => ({
   },
   decoration: {
     textDecoration: "none",
+    outline: "none",
   },
 }));
 
@@ -132,6 +133,7 @@ export default function PersistentDrawerLeft() {
             onClick={handleDrawerOpen}
             edge="start"
             className={clsx(classes.menuButton, open && classes.hide)}
+            style={{ outline: "none", textDecoration: "none" }}
           >
             <MenuIcon />
           </IconButton>
@@ -165,7 +167,10 @@ export default function PersistentDrawerLeft() {
         }}
       >
         <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton
+            onClick={handleDrawerClose}
+            style={{ outline: "none", textDecoration: "none" }}
+          >
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
             ) : (
