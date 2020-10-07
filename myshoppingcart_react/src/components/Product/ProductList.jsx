@@ -23,7 +23,6 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Search from "@material-ui/icons/Search";
-import { ToastProvider } from "react-toast-notifications";
 import Common from "Shared/Common";
 import * as ProductService from "Services/ProductService";
 import * as CommonStyles from "Shared/CommonStyle";
@@ -104,19 +103,17 @@ const ProductList = ({ classes }) => {
   };
   return (
     <div className="container">
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Paper className={classes.paper} elevation={3}>
           <Grid container>
             <Grid item xs={6}>
-              <ToastProvider autoDismiss={true}>
-                <ProductForm
-                  product={product}
-                  setProduct={setProduct}
-                  getProductList={getProductList}
-                  currentId={currentId}
-                  setCurrentId={setCurrentId}
-                />
-              </ToastProvider>
+              <ProductForm
+                product={product}
+                setProduct={setProduct}
+                getProductList={getProductList}
+                currentId={currentId}
+                setCurrentId={setCurrentId}
+              />
             </Grid>
             <Grid item xs={6}>
               <h1 className="categoryTitle">List of Products</h1>

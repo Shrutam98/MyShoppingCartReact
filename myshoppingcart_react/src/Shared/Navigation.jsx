@@ -106,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
 export default function PersistentDrawerLeft() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -184,6 +184,7 @@ export default function PersistentDrawerLeft() {
               color: "#f50057",
               textDecoration: "none",
             }}
+            onClick={handleDrawerClose}
           >
             <ListItem button>
               <ListItemIcon>
@@ -192,7 +193,6 @@ export default function PersistentDrawerLeft() {
               <ListItemText primary={"Dashboard"} />
             </ListItem>
           </NavLink>
-
           <NavLink
             to="/Category"
             style={{ textDecoration: "none" }}
@@ -201,6 +201,7 @@ export default function PersistentDrawerLeft() {
               textDecoration: "none",
             }}
             className={classes.link}
+            onClick={handleDrawerClose}
           >
             <ListItem button>
               <ListItemIcon>
@@ -218,6 +219,7 @@ export default function PersistentDrawerLeft() {
               textDecoration: "none",
             }}
             className={classes.link}
+            onClick={handleDrawerClose}
           >
             <ListItem button>
               <ListItemIcon>

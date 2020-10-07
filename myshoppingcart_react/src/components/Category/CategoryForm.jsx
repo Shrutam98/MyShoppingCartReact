@@ -7,7 +7,6 @@ import {
   Container,
   Paper,
 } from "@material-ui/core";
-import { useToasts } from "react-toast-notifications";
 import * as CategoryService from "Services/CategoryService";
 import * as CommonStyles from "Shared/CommonStyle";
 import Notification from "Shared/Notification";
@@ -21,7 +20,6 @@ const initialFieldValues = {
 };
 
 const CategoryForm = ({ classes, ...props }) => {
-  const { addToast } = useToasts();
   const [values, setValues] = useState(initialFieldValues);
   const [errors, setErrors] = useState({});
   const id = props.currentId;

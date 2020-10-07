@@ -13,6 +13,7 @@ export const listStyles = () => ({
   },
   paper: {
     margin: "16px",
+    marginLeft: "45px",
     padding: "16px",
   },
   searchtxtbox: {

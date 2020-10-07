@@ -11,7 +11,6 @@ import {
   Paper,
 } from "@material-ui/core";
 import "App.css";
-import { useToasts } from "react-toast-notifications";
 import Common from "Shared/Common";
 import * as CategoryService from "Services/CategoryService";
 import * as ProductService from "Services/ProductService";
@@ -32,7 +31,6 @@ const initialFieldValues = {
 };
 
 const ProductForm = ({ classes, ...props }) => {
-  const { addToast } = useToasts();
   const baseUrl = "https://localhost:44317/api/";
   const [values, setValues] = useState(initialFieldValues);
   const [errors, setErrors] = useState({});

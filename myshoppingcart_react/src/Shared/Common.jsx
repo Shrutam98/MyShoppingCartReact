@@ -121,6 +121,8 @@ const Common = (product, headCells, filterFn) => {
     TblPagination,
     recordAftterPagingAndSorting,
     recordAftterPaging,
+    page,
+    rowsPerPage,
     TblHead,
     emptyRows,
     dense,

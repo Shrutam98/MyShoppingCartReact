@@ -20,7 +20,6 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Search from "@material-ui/icons/Search";
 import CategoryForm from "components/Category/CategoryForm";
-import { ToastProvider } from "react-toast-notifications";
 import * as CategoryService from "Services/CategoryService";
 import Common from "Shared/Common";
 import * as CommonStyles from "Shared/CommonStyle";
@@ -94,19 +93,17 @@ const CategoryList = ({ classes }) => {
   };
   return (
     <div className="container">
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Paper className={classes.paper} elevation={3}>
           <Grid container>
             <Grid item xs={6}>
-              <ToastProvider autoDismiss={true}>
-                <CategoryForm
-                  category={category}
-                  setCategory={setCategory}
-                  getCategoriesList={getCategoriesList}
-                  currentId={currentId}
-                  setCurrentId={setCurrentId}
-                />
-              </ToastProvider>
+              <CategoryForm
+                category={category}
+                setCategory={setCategory}
+                getCategoriesList={getCategoriesList}
+                currentId={currentId}
+                setCurrentId={setCurrentId}
+              />
             </Grid>
             <Grid item xs={6}>
               <h1 className="categoryTitle">List of Category</h1>

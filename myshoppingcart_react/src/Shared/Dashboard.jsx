@@ -18,7 +18,7 @@ import {
   InputAdornment,
   Checkbox,
   FormControlLabel,
-  Switch,
+  TablePagination,
 } from "@material-ui/core/";
 import * as ProductService from "Services/ProductService";
 import * as CategoryService from "Services/CategoryService";
@@ -26,8 +26,7 @@ import Search from "@material-ui/icons/Search";
 import Common from "Shared/Common";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import LocalGroceryStoreIcon from "@material-ui/icons/LocalGroceryStore";
-import { Link, BrowserRouter, Route } from "react-router-dom";
-import Cart from "Shared/Cart";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -39,15 +38,14 @@ const useStyles = makeStyles({
     margin: 10,
   },
   formControl: {
-    marginLeft: "120px",
-    width: "21%",
+    width: "19%",
   },
 });
 const initialFieldValues = {
   categoryId: "",
 };
 
-const Dashboard = (props) => {
+const Dashboard = () => {
   const [product, setProduct] = useState([]);
   const [category, setCategory] = useState([]);
   const inputLabel = React.useRef(null);
@@ -58,10 +56,11 @@ const Dashboard = (props) => {
   const [searchResult, setSearchResult] = useState([]);
   const [categoryId, setCategoryId] = useState(0);
   const [cart, setCart] = useState([]);
-  const [page, setPage] = useState("products");
-  const imagePath = "https://localhost:44317/Images";
+  const imagePath = "https://localhost:44317/Images/";
   const classes = useStyles();
-  const { TblPagination, recordAftterPaging } = Common(product);
+  const { TblPagination, recordAftterPaging, page, rowsPerPage } = Common(
+    product
+  );
   const getProductList = async () => {
     const products = await ProductService.getProducts();
     setProduct(products.data);
@@ -88,14 +87,13 @@ const Dashboard = (props) => {
     setInputChange(target);
   };
   useEffect(() => {
-    const data = recordAftterPaging();
     let dataAfterFilter = inputChange
-      ? product.filter(
+      ? recordAftterPaging().filter(
           (x) =>
             x.quantity > 0 &&
             x.productName.toLowerCase().includes(searchInput.toLowerCase())
         )
-      : product.filter((x) =>
+      : recordAftterPaging().filter((x) =>
           x.productName.toLowerCase().includes(searchInput.toLowerCase())
         );
     if (categoryId !== 0) {
@@ -104,8 +102,7 @@ const Dashboard = (props) => {
       );
     }
     setSearchResult(dataAfterFilter);
-  }, [inputChange, searchInput, categoryId, product]);
-
+  }, [inputChange, searchInput, categoryId, product, rowsPerPage, page]);
   const addToCart = (record) => {
     setCart([...cart, record]);
     console.log("cart", cart);
@@ -113,8 +110,8 @@ const Dashboard = (props) => {
 
   return (
     <>
-      <div className="containerDashboard">
-        <div className="d-flex containerDashboard">
+      <div>
+        <div className="d-flex justify-content-center">
           <FormControl
             variant="outlined"
             className={classes.formControl}
@@ -138,7 +135,7 @@ const Dashboard = (props) => {
             labelPlacement="end"
             className="ml-5"
           />
-          <Toolbar className="ml-0">
+          <Toolbar className="ml-1">
             <TextField
               label="Search"
               variant="outlined"
@@ -160,13 +157,12 @@ const Dashboard = (props) => {
               cart: { cart },
               product: { product },
             }}
-            //to="/Cart"
             style={{ textDecoration: "none", color: "black" }}
             className="pt-1 ml-4"
             cart={cart}
             product={product}
           >
-            <Button variant="contained" color="primary" className="p-3">
+            <Button variant="contained" color="primary" className="p-3 ml-1">
               Go to Cart ({cart.length})
               <LocalGroceryStoreIcon className="ml-1 pl-1" />
             </Button>
@@ -177,15 +173,15 @@ const Dashboard = (props) => {
           Products
         </h2>
         <div className="imageStyle">
-          {recordAftterPaging().map((record, index) => {
+          {searchResult.map((record, index) => {
             return (
               <div key={index}>
-                <Container maxWidth="md" className="py-4">
+                <Container maxWidth="md" className="py-2">
                   <Card className={classes.root}>
                     <CardActionArea style={{ cursor: "auto" }}>
                       <CardMedia
                         className={classes.media}
-                        image={`https://localhost:44317/Images/${record.image}`}
+                        image={`${imagePath}${record.image}`}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
