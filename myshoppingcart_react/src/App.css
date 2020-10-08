@@ -11,17 +11,10 @@
 .tableMargin {
   margin-top: 42px;
 }
-/* .container {
-  margin-left: 40px;
-} */
-/* .containerDashboard {
-  margin-left: 25px;
-} */
 .imageStyle {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  /* margin-left: 255px; */
 }
 .imageStyleCart {
   display: flex;
@@ -34,5 +27,5 @@
   font-weight: bold;
 }
 .backToDashboard {
-  margin-right: 150px;
+  margin-right: 167px;
 }

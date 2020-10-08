@@ -25,36 +25,29 @@ import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 const headCells = [
   { id: "productName", label: "Product" },
   { id: "category", label: "Category", disableSorting: true },
-  { id: "price", label: "Price" },
+  { id: "price", label: "Price(₹)" },
   { id: "quantity", label: "Quantity" },
-  { id: "discount", label: "Discount" },
-  { id: "gst", label: "GST" },
+  { id: "discount", label: "Discount(₹)" },
+  { id: "gst", label: "GST(%)" },
   { id: "image", label: "Product Image", disableSorting: true },
   { id: "actions", label: "Actions", disableSorting: true },
 ];
 const styles = CommonStyles.listStyles();
-const useStyles = makeStyles({
-  root: {
-    maxWidth: 345,
-  },
-  media: {
-    height: 95,
-    width: 200,
-    margin: 10,
-  },
-});
-const Cart = (props) => {
-  const { TblHead } = Common(props.location.product, headCells);
-  const classes = useStyles();
-  useEffect(() => {}, [props.location.cart]);
+const Cart = ({ classes, ...props }) => {
   const onDelete = (productToRemove) => {
-    debugger;
     props.location.setCart.setCart(
-      props.location.cart.cart.splice((product) => product !== productToRemove)
+      props.location.cart.cart.filter((product) => product !== productToRemove)
     );
   };
+  useEffect(() => {
+    debugger;
+  }, [props.location.cart.cart]);
   const getTotalPrice = () => {
-    return props.location.cart.cart.reduce((sum, { price }) => sum + price, 0);
+    return props.location.cart.cart.reduce(
+      (sum, { price, quantity, discount, gst }) =>
+        sum + quantity * (price + (price * gst) / 100 - discount),
+      0
+    );
   };
   return (
     <>
@@ -84,7 +77,15 @@ const Cart = (props) => {
                     <div className="p-3">
                       <TableContainer>
                         <Table>
-                          <TblHead className={classes.root} />
+                          <TableHead className={classes.root}>
+                            <TableRow>
+                              {headCells.map((headCell, id) => (
+                                <TableCell key={headCell.id}>
+                                  {headCell.label}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          </TableHead>
                           <TableBody>
                             {props.location.cart.cart.map((record, index) => {
                               return (
@@ -115,7 +116,6 @@ const Cart = (props) => {
               </Paper>
             </Container>
           </div>
-
           <h2 className="mt-2">Total Coast : ₹ {getTotalPrice()} </h2>
         </div>
       }

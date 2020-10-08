@@ -33,10 +33,10 @@ const styles = CommonStyles.listStyles();
 const headCells = [
   { id: "productName", label: "Product" },
   { id: "category", label: "Category", disableSorting: true },
-  { id: "price", label: "Price" },
+  { id: "price", label: "Price(₹)" },
   { id: "quantity", label: "Quantity" },
-  { id: "discount", label: "Discount" },
-  { id: "gst", label: "GST" },
+  { id: "discount", label: "Discount(₹)" },
+  { id: "gst", label: "GST(%)" },
   { id: "image", label: "Product Image", disableSorting: true },
   { id: "actions", label: "Actions", disableSorting: true },
 ];

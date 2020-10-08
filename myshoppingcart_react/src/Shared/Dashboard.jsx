@@ -108,7 +108,6 @@ const Dashboard = () => {
     setSearchResult(dataAfterFilter);
   }, [inputChange, searchInput, categoryId, product, rowsPerPage, page]);
   const addToCart = (record) => {
-    debugger;
     setQuantity(record.quantity--);
     let newCart = [...cart];
     let itemInCart = newCart.find((x) => x.productId === record.productId);
@@ -130,7 +129,9 @@ const Dashboard = () => {
   const getCartTotal = () => {
     return cart.reduce((sum, { quantity }) => sum + quantity, 0);
   };
-
+  const total = () => {
+    getCartTotal();
+  };
   return (
     <>
       <div>
