@@ -73,8 +73,7 @@ const ProductForm = ({ classes, ...props }) => {
     if ("price" in fieldValues)
       temp.price = fieldValues.price ? "" : "This field is Required";
     if ("categoryId" in fieldValues)
-      temp.categoryId =
-        fieldValues.categoryId.length != 0 ? "" : "This field is Required";
+      temp.categoryId = fieldValues.categoryId ? "" : "This field is Required";
     setErrors({
       ...temp,
     });
@@ -198,13 +197,20 @@ const ProductForm = ({ classes, ...props }) => {
                   helperText: errors.categoryId,
                 })}
               >
-                <InputLabel ref={inputLabel}>Category</InputLabel>
+                <InputLabel ref={inputLabel}></InputLabel>
                 <Select
                   name="categoryId"
                   value={values.categoryId}
                   onChange={handleInputChange}
                   labelWidth={labelWidth}
+                  displayEmpty
+                  inputProps={{ "aria-label": "Without label" }}
                 >
+                  <MenuItem aria-label="None" value="">
+                    <p className="m-0 p-0" style={{ color: "grey" }}>
+                      ------- Slect Category --------
+                    </p>
+                  </MenuItem>
                   {category.map((item) => (
                     <MenuItem key={item.categoryId} value={item.categoryId}>
                       {item.categoryName}

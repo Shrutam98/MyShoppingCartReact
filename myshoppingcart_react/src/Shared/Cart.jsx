@@ -29,45 +29,35 @@ const headCells = [
   { id: "quantity", label: "Quantity" },
   { id: "discount", label: "Discount(₹)" },
   { id: "gst", label: "GST(%)" },
-  { id: "image", label: "Product Image", disableSorting: true },
+  { id: "image", label: "Image", disableSorting: true },
   { id: "actions", label: "Actions", disableSorting: true },
 ];
 const styles = CommonStyles.listStyles();
 const Cart = ({ classes, ...props }) => {
   const onDelete = (productToRemove) => {
-    props.location.setCart.setCart(
-      props.location.cart.cart.filter((product) => product !== productToRemove)
-    );
-  };
-  useEffect(() => {
     debugger;
-  }, [props.location.cart.cart]);
-  const getTotalPrice = () => {
-    return props.location.cart.cart.reduce(
-      (sum, { price, quantity, discount, gst }) =>
-        sum + quantity * (price + (price * gst) / 100 - discount),
-      0
+    const newCart = props.cart.filter(
+      (product) => product.productId !== productToRemove.productId
     );
+    props.setCart([...newCart]);
+  };
+  const navigateToProduct = (productPage) => {
+    props.setView(productPage);
   };
   return (
     <>
       {
         <div>
           <div className="d-flex justify-content-end backToDashboard">
-            <Link
-              to="/"
-              style={{
-                textDecoration: "none",
-                color: "black",
-                justifyContent: "end",
-              }}
-              className="pt-1 ml-4"
+            <Button
+              variant="contained"
+              color="primary"
+              className="p-3"
+              onClick={() => navigateToProduct(props.PRODUCT_VIEW)}
             >
-              <Button variant="contained" color="primary" className="p-3">
-                Back to Products
-                <LocalMallIcon className="ml-1 pl-1" />
-              </Button>
-            </Link>
+              Back to Products
+              <LocalMallIcon className="ml-1 pl-1" />
+            </Button>
           </div>
           <div className="container">
             <Container maxWidth="lg">
@@ -87,7 +77,7 @@ const Cart = ({ classes, ...props }) => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {props.location.cart.cart.map((record, index) => {
+                            {props.cart.map((record, index) => {
                               return (
                                 <TableRow key={index} hover>
                                   <TableCell>{record.productName}</TableCell>
@@ -116,7 +106,18 @@ const Cart = ({ classes, ...props }) => {
               </Paper>
             </Container>
           </div>
-          <h2 className="mt-2">Total Coast : ₹ {getTotalPrice()} </h2>
+          <h2 className="mt-2">Total Coast : ₹ {props.getTotalPrice()} </h2>
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              className="ml-5 mt-1"
+              style={{ height: "56px", outline: "none" }}
+            >
+              Checkout
+            </Button>
+          </div>
         </div>
       }
     </>
