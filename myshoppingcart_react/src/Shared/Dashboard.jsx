@@ -55,7 +55,6 @@ const Dashboard = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [categoryId, setCategoryId] = useState(0);
   const [cart, setCart] = useState([]);
-  const [quantity, setQuantity] = useState(0);
   const [view, setView] = useState(PRODUCT_VIEW);
   const imagePath = "https://localhost:44317/Images/";
   const classes = useStyles();
@@ -67,6 +66,7 @@ const Dashboard = () => {
     getCategoriesList();
     getProductList();
   }, []);
+
   useEffect(() => {
     let dataAfterFilter = inputChange
       ? recordAftterPaging().filter(
@@ -82,9 +82,8 @@ const Dashboard = () => {
         (x) => x.categoryId === categoryId
       );
     }
-
     setSearchResult(dataAfterFilter);
-  }, [inputChange, searchInput, categoryId, product, rowsPerPage, page]);
+  }, [inputChange, searchInput, categoryId, page, rowsPerPage, product]);
   useEffect(() => {
     getTotalPrice();
   }, [cart]);
@@ -108,20 +107,31 @@ const Dashboard = () => {
     setInputChange(target);
   };
   const addToCart = (record) => {
-    setQuantity(record.quantity--);
     let newCart = [...cart];
     let itemInCart = newCart.find((x) => x.productId === record.productId);
     if (itemInCart) {
       itemInCart.quantity++;
+      record.quantity--;
     } else {
       itemInCart = {
         ...record,
+        ...record.quantity--,
         quantity: 1,
       };
       newCart.push(itemInCart);
-      localStorage.setItem("newCart", cart);
     }
-    setCart(newCart);
+    setCart(newCart, { ...record });
+  };
+  const removeFromCart = (record) => {
+    let newCart = [...product];
+    let item = newCart.find((x) => x.productId === record.productId);
+    if (item) {
+      // if(item.quantity >1){
+
+      // }
+      item.quantity++;
+    }
+    setProduct(newCart);
   };
   const renderCart = () => {
     return (
@@ -129,11 +139,13 @@ const Dashboard = () => {
         <Cart
           cart={cart}
           product={product}
+          setProduct={setProduct}
           setCart={setCart}
           view={view}
           setView={setView}
           PRODUCT_VIEW={PRODUCT_VIEW}
           getTotalPrice={getTotalPrice}
+          removeFromCart={removeFromCart}
         />
       </div>
     );
@@ -141,7 +153,7 @@ const Dashboard = () => {
   const navigateToCart = (cartPage) => {
     setView(cartPage);
   };
-  const clearCart = (product) => {
+  const clearCart = (record) => {
     setCart([]);
     getProductList();
   };
@@ -281,24 +293,59 @@ const Dashboard = () => {
                             justifyContent: "center",
                           }}
                         >
-                          {record.quantity > 0 ? (
-                            <Button
-                              size="large"
-                              style={{ color: "white", outline: "none" }}
-                              endIcon={<AddShoppingCartIcon className="ml-1" />}
-                              className="px-4"
-                              onClick={() => addToCart(record)}
-                            >
-                              Add to Cart
-                            </Button>
-                          ) : (
-                            <h6
-                              style={{ color: "white" }}
-                              className="py-2 my-1 m-0"
-                            >
-                              Not in stock
-                            </h6>
-                          )}
+                          <div>
+                            <div>
+                              {record.quantity > 0 ? (
+                                <Button
+                                  size="large"
+                                  style={{ color: "white", outline: "none" }}
+                                  endIcon={
+                                    <AddShoppingCartIcon className="ml-1" />
+                                  }
+                                  className="px-4"
+                                  onClick={() => addToCart(record)}
+                                >
+                                  Add to Cart
+                                </Button>
+                              ) : (
+                                <h6
+                                  style={{ color: "white" }}
+                                  className="py-2 my-1 m-0"
+                                >
+                                  Not in stock
+                                </h6>
+                              )}
+                            </div>
+
+                            {/* <div>
+                              {getCartTotal() > 0 ? (
+                                <Button
+                                  size="large"
+                                  style={{ color: "white", outline: "none" }}
+                                  endIcon={
+                                    <RemoveShoppingCartIcon className="ml-1" />
+                                  }
+                                  className="px-4"
+                                  onClick={() => removeFromCart(record)}
+                                >
+                                  Remove
+                                </Button>
+                              ) : (
+                                <Button
+                                  disabled
+                                  size="large"
+                                  style={{ color: "white", outline: "none" }}
+                                  endIcon={
+                                    <RemoveShoppingCartIcon className="ml-1" />
+                                  }
+                                  className="px-4"
+                                  // onClick={() => removeFromCart(record)}
+                                >
+                                  Remove
+                                </Button>
+                              )}
+                            </div> */}
+                          </div>
                         </CardActions>
                       </Card>
                     </Container>

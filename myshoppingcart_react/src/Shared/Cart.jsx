@@ -35,11 +35,18 @@ const headCells = [
 const styles = CommonStyles.listStyles();
 const Cart = ({ classes, ...props }) => {
   const onDelete = (productToRemove) => {
-    debugger;
-    const newCart = props.cart.filter(
-      (product) => product.productId !== productToRemove.productId
-    );
-    props.setCart([...newCart]);
+    let test = props.cart.find((x) => x.productId == productToRemove.productId);
+    if (test.quantity > 1) {
+      test.quantity--;
+      props.removeFromCart(productToRemove);
+      props.setCart([...props.cart]);
+    } else {
+      let newCart = props.cart.filter(
+        (product) => product.productId !== productToRemove.productId
+      );
+      props.removeFromCart(productToRemove);
+      props.setCart([...newCart]);
+    }
   };
   const navigateToProduct = (productPage) => {
     props.setView(productPage);
