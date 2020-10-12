@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api } from "Services/api";
 
 const baseUrl = "https://localhost:44317/api/" + "Products/";
 const baseUrlCategory = "https://localhost:44317/api/" + "Categories/";

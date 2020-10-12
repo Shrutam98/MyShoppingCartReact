@@ -26,9 +26,9 @@ import Search from "@material-ui/icons/Search";
 import Common from "Shared/Common";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import LocalGroceryStoreIcon from "@material-ui/icons/LocalGroceryStore";
-import { Link } from "react-router-dom";
 import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 import Cart from "Shared/Cart";
+import Invoice from "./Invoice";
 
 const useStyles = makeStyles({
   root: {
@@ -43,6 +43,7 @@ const useStyles = makeStyles({
     width: "19%",
   },
 });
+const imagePath = "https://localhost:44317/Images/";
 const PRODUCT_VIEW = "product";
 const CART_VIEW = "cart";
 const Dashboard = () => {
@@ -56,7 +57,6 @@ const Dashboard = () => {
   const [categoryId, setCategoryId] = useState(0);
   const [cart, setCart] = useState([]);
   const [view, setView] = useState(PRODUCT_VIEW);
-  const imagePath = "https://localhost:44317/Images/";
   const classes = useStyles();
   const { TblPagination, recordAftterPaging, page, rowsPerPage } = Common(
     product
@@ -126,9 +126,6 @@ const Dashboard = () => {
     let newCart = [...product];
     let item = newCart.find((x) => x.productId === record.productId);
     if (item) {
-      // if(item.quantity >1){
-
-      // }
       item.quantity++;
     }
     setProduct(newCart);
@@ -146,6 +143,8 @@ const Dashboard = () => {
           PRODUCT_VIEW={PRODUCT_VIEW}
           getTotalPrice={getTotalPrice}
           removeFromCart={removeFromCart}
+          clearCart={clearCart}
+          addToCart={addToCart}
         />
       </div>
     );
@@ -229,7 +228,7 @@ const Dashboard = () => {
                 variant="contained"
                 color="primary"
                 size="small"
-                className="ml-4 mt-1"
+                className="ml-4 mt-1 px-5"
                 style={{ height: "56px", outline: "none" }}
                 onClick={() => navigateToCart(CART_VIEW)}
               >
@@ -240,7 +239,7 @@ const Dashboard = () => {
                 variant="contained"
                 color="primary"
                 size="small"
-                className="ml-5 mt-1"
+                className="ml-5 mt-1 px-5"
                 style={{ height: "56px", outline: "none" }}
                 onClick={() => clearCart(product)}
               >
@@ -249,7 +248,10 @@ const Dashboard = () => {
               </Button>
             </div>
             <hr />
-            <h2 className="productTitle" style={{ color: "#3f51b5" }}>
+            <h2
+              className="productTitle"
+              style={{ color: "#3f51b5", margin: "0" }}
+            >
               Products
             </h2>
             <div className="imageStyle">
@@ -269,7 +271,7 @@ const Dashboard = () => {
                               variant="h5"
                               component="h2"
                             >
-                              Name : {record.productName}
+                              {record.productName}
                             </Typography>
                             <Typography
                               variant="h5"
@@ -316,35 +318,6 @@ const Dashboard = () => {
                                 </h6>
                               )}
                             </div>
-
-                            {/* <div>
-                              {getCartTotal() > 0 ? (
-                                <Button
-                                  size="large"
-                                  style={{ color: "white", outline: "none" }}
-                                  endIcon={
-                                    <RemoveShoppingCartIcon className="ml-1" />
-                                  }
-                                  className="px-4"
-                                  onClick={() => removeFromCart(record)}
-                                >
-                                  Remove
-                                </Button>
-                              ) : (
-                                <Button
-                                  disabled
-                                  size="large"
-                                  style={{ color: "white", outline: "none" }}
-                                  endIcon={
-                                    <RemoveShoppingCartIcon className="ml-1" />
-                                  }
-                                  className="px-4"
-                                  // onClick={() => removeFromCart(record)}
-                                >
-                                  Remove
-                                </Button>
-                              )}
-                            </div> */}
                           </div>
                         </CardActions>
                       </Card>

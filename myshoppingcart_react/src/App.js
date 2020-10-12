@@ -8,6 +8,7 @@ import Dashboard from "Shared/Dashboard";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Cart from "Shared/Cart";
 import PageNotFound from "Shared/PageNotFound";
+import Invoice from "Shared/Invoice";
 
 function App(props) {
   return (
@@ -19,7 +20,6 @@ function App(props) {
           <Route path="/Dashboard" exact component={Dashboard} />
           <Route path="/Category" component={CategoryList} />
           <Route path="/Product" component={ProductList} />
-          <Route path="/Cart" component={Cart} />
           <Route component={PageNotFound} />
         </Switch>
       </BrowserRouter>
