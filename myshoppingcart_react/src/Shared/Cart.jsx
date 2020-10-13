@@ -171,7 +171,7 @@ const Cart = ({ classes, ...props }) => {
             })}
           </div>
           <ModalPopup
-            title="Invoice"
+            title="Checkout"
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
           >
@@ -186,6 +186,7 @@ const Cart = ({ classes, ...props }) => {
               setOpenPopup={setOpenPopup}
               clearCart={props.clearCart}
               addToCart={props.addToCart}
+              getProductList={props.getProductList}
             />
           </ModalPopup>
         </div>

@@ -28,7 +28,6 @@ import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import LocalGroceryStoreIcon from "@material-ui/icons/LocalGroceryStore";
 import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 import Cart from "Shared/Cart";
-import Invoice from "./Invoice";
 
 const useStyles = makeStyles({
   root: {
@@ -145,6 +144,7 @@ const Dashboard = () => {
           removeFromCart={removeFromCart}
           clearCart={clearCart}
           addToCart={addToCart}
+          getProductList={getProductList}
         />
       </div>
     );

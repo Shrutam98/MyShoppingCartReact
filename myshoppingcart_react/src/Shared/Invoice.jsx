@@ -18,6 +18,7 @@ import * as InvoiceService from "Services/InvoiceService";
 import * as ProductService from "Services/ProductService";
 import * as CommonStyles from "Shared/CommonStyle";
 import Notification from "Shared/Notification";
+import PDF from "Shared/PDF";
 
 const headCells = [
   { id: "productName", label: "Product" },
@@ -43,6 +44,9 @@ var datetime =
   currentdate.getSeconds() +
   "." +
   currentdate.getMilliseconds();
+
+const CHECKOUT_VIEW = "checkout";
+const PDF_VIEW = "pdf";
 const Invoice = ({ classes, ...props }) => {
   const { recordForEdit } = props;
   const initialFieldValues = {
@@ -57,11 +61,8 @@ const Invoice = ({ classes, ...props }) => {
   const [values, setValues] = useState(initialFieldValues);
   const [errors, setErrors] = useState({});
   const [invoice, setInvoice] = useState([]);
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: "",
-    type: "",
-  });
+  const [view, setView] = useState(CHECKOUT_VIEW);
+
   useEffect(() => {
     if (recordForEdit != null)
       setValues({
@@ -101,6 +102,24 @@ const Invoice = ({ classes, ...props }) => {
       ...fieldValue,
     });
     validate(fieldValue);
+  };
+  const renderPdf = () => {
+    return (
+      <div>
+        <PDF
+          cart={props.cart}
+          setCart={props.setCart}
+          product={props.product}
+          setProduct={props.setProduct}
+          setCart={props.setCart}
+          getTotalPrice={props.getTotalPrice}
+          recordForEdit={recordForEdit}
+          clearCart={props.clearCart}
+          addToCart={props.addToCart}
+          setOpenPopup={props.setOpenPopup}
+        />
+      </div>
+    );
   };
 
   const data = new FormData();
@@ -145,181 +164,182 @@ const Invoice = ({ classes, ...props }) => {
     if (validate()) {
       addInvoice();
       updateProduct();
-      props.setOpenPopup(false);
-      props.clearCart();
+      setView(PDF_VIEW);
     }
   };
 
   return (
     <div>
-      <div>
-        <form
-          autoComplete="off"
-          noValidate
-          className={classes.root}
-          onSubmit={handleSubmit}
-        >
-          <Grid container>
-            <Grid>
-              <div>
-                <TextField
-                  name="userName"
-                  variant="outlined"
-                  label="User Name"
-                  value={values.userName}
-                  onChange={handleInputChange}
-                  {...(errors.userName && {
-                    error: true,
-                    helperText: errors.userName,
-                  })}
-                />
-                <TextField
-                  name="email"
-                  variant="outlined"
-                  label="Email"
-                  value={values.email}
-                  onChange={handleInputChange}
-                  {...(errors.email && {
-                    error: true,
-                    helperText: errors.email,
-                  })}
-                />
-                <TextField
-                  name="phoneNumber"
-                  variant="outlined"
-                  label="Phone Number"
-                  type="number"
-                  value={values.phoneNumber}
-                  onChange={handleInputChange}
-                  {...(errors.phoneNumber && {
-                    error: true,
-                    helperText: errors.phoneNumber,
-                  })}
-                />
-                <TextField
-                  name="address"
-                  variant="outlined"
-                  label="Address"
-                  value={values.address}
-                  onChange={handleInputChange}
-                />
-                <TextField
-                  name="invoiceNumber"
-                  variant="outlined"
-                  label="Invoice Number"
-                  onChange={handleInputChange}
-                  value={values.invoiceNumber}
-                  hidden
-                  disabled
-                />
-                <TextField
-                  name="date"
-                  variant="outlined"
-                  label="Date"
-                  value={values.date}
-                  onChange={handleInputChange}
-                  hidden
-                  disabled
-                />
-                <TextField
-                  name="customerId"
-                  variant="outlined"
-                  label="CustomerId"
-                  value={values.customerId}
-                  onChange={handleInputChange}
-                  hidden
-                  disabled
-                />
-                <div style={{ display: "none" }}>{props.getTotalPrice()}</div>
-                <TextField
-                  name="productId"
-                  variant="outlined"
-                  label="Product Id"
-                  type="number"
-                  value={values.productId}
-                  onChange={handleInputChange}
-                  hidden
-                  disabled
-                />
-              </div>
-              <hr />
-              <div className="container">
-                <Container maxWidth="lg">
-                  <Paper className={classes.paper} elevation={2}>
-                    <Grid container>
-                      <Grid item xs={12}>
-                        <div className="p-3">
-                          <TableContainer>
-                            <Table>
-                              <TableHead
-                                className={classes.root}
-                                style={{
-                                  background: "#3f51b5",
-                                }}
-                              >
-                                <TableRow>
-                                  {headCells.map((headCell, id) => (
-                                    <TableCell
-                                      key={headCell.id}
-                                      className="text-center text-light"
-                                    >
-                                      {headCell.label}
-                                    </TableCell>
-                                  ))}
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {props.cart.map((record, index) => {
-                                  return (
-                                    <TableRow key={index} hover>
-                                      <TableCell className="text-center">
-                                        {record.productName}
+      {view === CHECKOUT_VIEW && (
+        <div>
+          <form
+            autoComplete="off"
+            noValidate
+            className={classes.root}
+            onSubmit={handleSubmit}
+          >
+            <Grid container>
+              <Grid>
+                <div>
+                  <TextField
+                    name="userName"
+                    variant="outlined"
+                    label="User Name"
+                    value={values.userName}
+                    onChange={handleInputChange}
+                    {...(errors.userName && {
+                      error: true,
+                      helperText: errors.userName,
+                    })}
+                  />
+                  <TextField
+                    name="email"
+                    variant="outlined"
+                    label="Email"
+                    value={values.email}
+                    onChange={handleInputChange}
+                    {...(errors.email && {
+                      error: true,
+                      helperText: errors.email,
+                    })}
+                  />
+                  <TextField
+                    name="phoneNumber"
+                    variant="outlined"
+                    label="Phone Number"
+                    type="number"
+                    value={values.phoneNumber}
+                    onChange={handleInputChange}
+                    {...(errors.phoneNumber && {
+                      error: true,
+                      helperText: errors.phoneNumber,
+                    })}
+                  />
+                  <TextField
+                    name="address"
+                    variant="outlined"
+                    label="Address"
+                    value={values.address}
+                    onChange={handleInputChange}
+                  />
+                  <TextField
+                    name="invoiceNumber"
+                    variant="outlined"
+                    label="Invoice Number"
+                    onChange={handleInputChange}
+                    value={values.invoiceNumber}
+                    hidden
+                    disabled
+                  />
+                  <TextField
+                    name="date"
+                    variant="outlined"
+                    label="Date"
+                    value={values.date}
+                    onChange={handleInputChange}
+                    hidden
+                    disabled
+                  />
+                  <TextField
+                    name="customerId"
+                    variant="outlined"
+                    label="CustomerId"
+                    value={values.customerId}
+                    onChange={handleInputChange}
+                    hidden
+                    disabled
+                  />
+                  <div style={{ display: "none" }}>{props.getTotalPrice()}</div>
+                  <TextField
+                    name="productId"
+                    variant="outlined"
+                    label="Product Id"
+                    type="number"
+                    value={values.productId}
+                    onChange={handleInputChange}
+                    hidden
+                    disabled
+                  />
+                </div>
+                <hr />
+                <div className="container">
+                  <Container maxWidth="lg">
+                    <Paper className={classes.paper} elevation={2}>
+                      <Grid container>
+                        <Grid item xs={12}>
+                          <div className="p-3">
+                            <TableContainer>
+                              <Table>
+                                <TableHead
+                                  className={classes.root}
+                                  style={{
+                                    background: "#3f51b5",
+                                  }}
+                                >
+                                  <TableRow>
+                                    {headCells.map((headCell, id) => (
+                                      <TableCell
+                                        key={headCell.id}
+                                        className="text-center text-light"
+                                      >
+                                        {headCell.label}
                                       </TableCell>
-                                      <TableCell className="text-center">
-                                        {record.category?.categoryName}
-                                      </TableCell>
-                                      <TableCell className="text-center">
-                                        {record.price}
-                                      </TableCell>
-                                      <TableCell className="text-center">
-                                        {record.quantity}
-                                      </TableCell>
-                                      <TableCell className="text-center">
-                                        {record.discount}
-                                      </TableCell>
-                                      <TableCell className="text-center">
-                                        {record.gst}
-                                      </TableCell>
-                                    </TableRow>
-                                  );
-                                })}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </div>
+                                    ))}
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {props.cart.map((record, index) => {
+                                    return (
+                                      <TableRow key={index} hover>
+                                        <TableCell className="text-center">
+                                          {record.productName}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                          {record.category?.categoryName}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                          {record.price}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                          {record.quantity}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                          {record.discount}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                          {record.gst}
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </div>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </Paper>
-                </Container>
-              </div>
-              <h2 className="mt-2 text-right mr-4">
-                Total Coast : ₹ {props.getTotalPrice()}
-              </h2>
-              <div className="buttonDivProduct mt-4 text-center">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  className="p-3"
-                >
-                  Submit
-                </Button>
-              </div>
+                    </Paper>
+                  </Container>
+                </div>
+                <h2 className="mt-2 text-right mr-4">
+                  Total Coast : ₹ {props.getTotalPrice()}
+                </h2>
+                <div className="buttonDivProduct mt-4 text-center">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    className="p-3"
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Notification notify={notify} setNotify={setNotify} />
+          </form>
+        </div>
+      )}
+      {view === PDF_VIEW && renderPdf()}
     </div>
   );
 };
